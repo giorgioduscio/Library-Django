@@ -1,0 +1,14 @@
+services:
+  django-demo:
+    build: .
+    container_name: django-demo
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - PYTHONUNBUFFERED=1
+    stdin_open: true
+    tty: true
