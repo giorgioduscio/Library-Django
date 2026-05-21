@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ titolo_pagina }}{% endblock %}
+
+{% block content %}
+<div class="border rounded overflow-hidden">
+  <div class="">
+    <div class="shadow">
+      <div class="p-3 text-bg-primary">
+        <h4 class="mb-0">{{ titolo_pagina }}</h4>
+      </div>
+      <div class="">
+        <form method="post" novalidate class="p-2 row">
+          {% csrf_token %}
+          
+          {% for field in form %}
+            <div class="col-12 col-md-6 col-lg-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+              {% endif %}
+              {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          {% endfor %}
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+            <a href="{% url 'lista_risorse' %}" class="btn btn-secondary">Annulla</a>
+            <button type="submit" class="btn btn-primary px-4">Salva</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Aggiungi classi Bootstrap ai campi del form automaticamente
+  document.querySelectorAll('input, textarea, select').forEach(element => {
+    if (element.type !== 'checkbox') {
+      element.classList.add('form-control');
+    } else {
+      element.classList.add('form-check-input');
+    }
+  });
+</script>
+<style>
+  textarea.form-control {
+    max-height: 40px !important;
+  }
+</style>
+{% endblock %}

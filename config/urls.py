@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from catalogo import views
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # CATALOGO
+    path('catalogo/', views.lista_risorse, name='lista_risorse'),
+    path('catalogo/nuovo/', views.crea_risorsa, name='crea_risorsa'),
+    path('catalogo/modifica/<int:pk>/', views.modifica_risorsa, name='modifica_risorsa'),
+    path('catalogo/elimina/<int:pk>/', views.elimina_risorsa, name='elimina_risorsa'),
 ]

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Conferma Eliminazione{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 text-center">
+    <div class="border rounded border-danger overflow-hidden">
+      <div class="p-3 text-bg-danger">
+        <h4 class="mb-0">Attenzione!</h4>
+      </div>
+      <div class="p-3 text-bg-dark">
+        <h3>Sei sicuro?</h3>
+        <p class="lead mb-4">Stai per eliminare definitivamente la risorsa:<br><strong>"{{ risorsa.titolo }}"</strong></p>
+        
+        <form method="post">
+          {% csrf_token %}
+          <div class="gap-3 d-grid d-md-flex justify-content-md-center align-items-center">
+            <a href="{% url 'lista_risorse' %}" class="btn btn-secondary px-4">Annulla</a>
+            <button type="submit" class="btn btn-danger text-truncate">Elimina per sempre</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

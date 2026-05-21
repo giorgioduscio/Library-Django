@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Catalogo Risorse{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="text-truncate">Catalogo Risorse</h1>
+  <a href="{% url 'crea_risorsa' %}" class="btn btn-success text-truncate">
+    Aggiungi Nuova Risorsa
+  </a>
+</div>
+
+<div class="border rounded overflow-hidden">
+  <div class="table-responsive">
+    <table class="m-0 table table-hover table-dark">
+      <caption class="px-2 text-bg-dark">Elenco delle risorse disponibili</caption>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Titolo</th> 
+          <th>Descrizione</th>
+          <th>Prezzo</th>
+          <th>Disponibile</th>
+          <th>Azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for risorsa in risorse %}
+        <tr>
+          <td>{{ risorsa.id }}</td>
+          <td>{{ risorsa.titolo }}</td>
+          <td>{{ risorsa.descrizione }}</td>
+          <td><span class="badge bg-primary fs-6">{{ risorsa.prezzo }}€</span></td>
+          <td>
+            {% if risorsa.disponibile %}
+              <span class="badge bg-success">Disponibile</span>
+            {% else %}
+              <span class="badge bg-secondary">Non disp.</span>
+            {% endif %}
+          </td>
+          <td >
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-sm btn-primary" href="{% url 'modifica_risorsa' risorsa.pk %}">Modifica</a>
+              <a class="btn btn-sm btn-danger" href="{% url 'elimina_risorsa' risorsa.pk %}" >Elimina</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center py-4">Nessuna risorsa trovata nel catalogo.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

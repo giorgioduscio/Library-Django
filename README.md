@@ -60,15 +60,74 @@ Se preferisci usare Docker, usa questi comandi:
 - La `SECRET_KEY` attuale è visibile in `config/settings.py`. Per la messa in produzione, assicurati di spostarla in un file `.env`.
 - Il database `db.sqlite3` è escluso dal controllo versione tramite `.gitignore`.
 
-# Workflow
+# Workflow creare pagina (Esempio: Spesa)
 
-Per creare una nuova pagina, bisogna: 
+**Sintesi**
 
-1) Nel terminale del container, scrivi `python manage.py startapp new_function`
-2) Vai in config/settings.py, aggiungi 'new_function' in INSTALLED_APPS 
-3) Apri new_function/models.py e definisci il modello di dati
-4) Crea la Tabella nel Database e scrivi `python manage.py makemigrations` e `python manage.py migrate`
-5) Visualizza i dati nell'Area Admin new_function/admin.py
-6) Crea il backend in new_function/views.py
-7) Crea template in new_function/templates/new_function.html
-8) apri config/urls.py e aggiungi `path('spesa/', lista_spesa, name='lista_spesa')` a urlpatterns
+1) *Crea*:    `python manage.py startapp spesa`
+2) *Registra* `INSTALLED_APPS = [..., 'spesa']`
+3) *Modello*  `class ModelloCustom(models.Model):`
+4) *Sync*     `python manage.py makemigrations` -> `python manage.py migrate`
+5) *Admin*    admin.site.register(ModelloCustom)
+6) *Logica*   `def lista_spesa_view(request):`
+7) *Template* `proj/templates/proj/file.html`: <html></html> 
+8) *url*      urlpatterns = [... path('spesa/', nome_view, name='nome_view') ]  
+
+**Dettagli**
+
+1. **Crea App**: Nel terminale (del container) 
+    * `python manage.py startapp spesa`
+2. **Registra**: In `config/settings.py` -> `INSTALLED_APPS = [..., 'spesa']`
+3. **Modella**: In `spesa/models.py`:
+    ```python
+    from django.db import models
+    class ElementoLista(models.Model):
+        title = models.CharField(max_length=200)
+        complete = models.BooleanField(default=False)
+    ```
+4. **Database**: Scrivere nel terminale (del container)
+    * `python manage.py makemigrations` 
+    * `python manage.py migrate`
+5. **Admin**: In `spesa/admin.py`: 
+    ```python
+    from django.contrib import admin
+    from .models import ElementoLista
+
+    admin.site.register(ElementoLista)
+    ```
+6. **Logica**: In `spesa/views.py`:
+    ```python
+    from django.shortcuts import render
+    from .models import ElementoLista
+    def lista_spesa_view(request):
+        elementi = ElementoLista.objects.all()
+        return render(request, 'spesa/lista.html', {'lista': elementi})
+    ```
+7. **Template**: In `spesa/templates/spesa/lista.html`:
+    ```html
+      <ul>
+        {% for x in lista %} 
+        <li>{{ x.title }}</li>
+        {% endfor %}
+      </ul>
+    ```
+8. **URL**: In `config/urls.py`:
+    ```python
+    from django.contrib import admin
+    from django.urls import path
+    from spesa.views import lista_spesa_view
+
+    urlpatterns = [
+        ...
+        path('spesa/', lista_spesa_view, name='lista_spesa_view')
+    ]  
+    ```
+
+9. **Creare utente**
+    - Aprire il terminale del container
+    ```python
+    python manage.py createsuperuser --username gestore
+    ```
+    Inserire email (facoltativa) e password (+ conferma)
+
+python manage.py shell

@@ -1,4 +1,4 @@
-# Python
+# --- Python ---
 __pycache__/
 *.py[cod]
 *$py.class
@@ -22,26 +22,53 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Django
+# --- Django ---
+*.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
+static/
+.static_storage/
+.media_storage/
 
-# Environments
+# --- Environments ---
 .env
 .venv
 venv/
 ENV/
 env.bak/
 venv.bak/
+python/
 
-# Docker
-.dockerignore
-
-# IDEs
+# --- IDEs / Editors ---
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+.DS_Store
+Thumbs.db
+
+# --- Testing / Coverage ---
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# --- Others ---
+*.bak
+*.tmp
+*.sql
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.project
+.pydevproject
+.settings/
