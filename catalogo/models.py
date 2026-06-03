@@ -1,7 +1,7 @@
 from django.db import models
 
 class Risorsa(models.Model):
-    titolo      = models.CharField(max_length=255)
+    titolo      = models.CharField(max_length=100)
     descrizione = models.TextField()
     prezzo      = models.FloatField()
     disponibile = models.BooleanField(default=True)
@@ -18,7 +18,10 @@ class Utente(models.Model):
     cognome = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     eta = models.IntegerField()
-    # libri_prestito =models.ar
+    attivo = models.BooleanField(default=True)
+    libri_prestito =models.ManyToManyField(Risorsa)
 
     def __str__(self):
-        return f"{self.nome} {self.cognome} ({self.email}) {self.eta} anni"
+        return f"{self.id}) {self.nome} {self.cognome} ({self.email}) {self.eta} anni"
+    class Meta:
+        ordering =['email']

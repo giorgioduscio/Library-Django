@@ -62,17 +62,6 @@ Se preferisci usare Docker, usa questi comandi:
 
 # Workflow creare pagina (Esempio: Spesa)
 
-**Sintesi**
-
-1) *Crea*:    `python manage.py startapp spesa`
-2) *Registra* `INSTALLED_APPS = [..., 'spesa']`
-3) *Modello*  `class ModelloCustom(models.Model):`
-4) *Sync*     `python manage.py makemigrations` -> `python manage.py migrate`
-5) *Admin*    admin.site.register(ModelloCustom)
-6) *Logica*   `def lista_spesa_view(request):`
-7) *Template* `proj/templates/proj/file.html`: <html></html> 
-8) *url*      urlpatterns = [... path('spesa/', nome_view, name='nome_view') ]  
-
 **Dettagli**
 
 1. **Crea App**: Nel terminale (del container) 
@@ -126,8 +115,7 @@ Se preferisci usare Docker, usa questi comandi:
 9. **Creare utente**
     - Aprire il terminale del container
     ```python
-    python manage.py createsuperuser --username gestore
+    python manage.py createsuperuser --username gestore 
     ```
     Inserire email (facoltativa) e password (+ conferma)
 
-python manage.py shell

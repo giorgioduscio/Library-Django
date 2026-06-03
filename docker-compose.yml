@@ -6,9 +6,11 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "${PORT:-8000}:8000"
     environment:
-      - DEBUG=True
+      - DEBUG=${DEBUG:-True}
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-default-key-for-dev}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
       - PYTHONUNBUFFERED=1
     stdin_open: true
     tty: true

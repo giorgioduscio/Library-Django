@@ -16,7 +16,7 @@
         <form method="post">
           {% csrf_token %}
           <div class="gap-3 d-grid d-md-flex justify-content-md-center align-items-center">
-            <a href="{% url 'lista_risorse' %}" class="btn btn-secondary px-4">Annulla</a>
+            <a href="{% url 'risorsa_all' %}" class="btn btn-secondary px-4">Annulla</a>
             <button type="submit" class="btn btn-danger text-truncate">Elimina per sempre</button>
           </div>
         </form>
