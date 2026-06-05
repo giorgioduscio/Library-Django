@@ -25,6 +25,29 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'risorsa_all' %}">Catalogo</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'utente_list' %}">Utenti</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+              {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <span class="nav-link text-info">Ciao, {{ user.username }}</span>
+                </li>
+                <li class="nav-item">
+                  <form action="{% url 'auth_logout' %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link btn btn-link text-white" style="text-decoration: none;">Esci</button>
+                  </form>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'auth_access' %}">Accedi</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'auth_register' %}">Registrati</a>
+                </li>
+              {% endif %}
             </ul>
           </div>
         </div>

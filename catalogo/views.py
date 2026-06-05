@@ -1,12 +1,28 @@
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
-from .models import Risorsa
+from django.urls import reverse_lazy
+from .models import Risorsa, Utente
 from .forms import RisorsaForm
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 def redirect_alla_home(request):
-    return redirect('risorsa_all')
+    return redirect('home')
+
+def home(request):
+    actions=[
+        {
+            'title': 'Vai alla lista delle risorse',
+            'url': 'risorsa_all',
+            'icon': 'list'
+        }
+    ]
+    return render(request, 'home.html', {'actions': actions})
 
 def risorsa_all(request):
     """
@@ -119,3 +135,83 @@ def risorsa_delete(request, pk):
 
     # Se la richiesta è GET, mostriamo la pagina di avviso prima di procedere
     return render(request, 'risorsa_delete.html', {'risorsa': risorsa})
+
+
+# UTENTI
+
+utente_fields_list =["nome", "cognome", "email", "eta", "attivo"]
+
+class UtenteCreateView(CreateView):
+    model = Utente
+    fields = utente_fields_list
+    template_name = "utente_form.html"
+    success_url =reverse_lazy('utente_list')
+
+@login_required(login_url='auth_access')
+def utente_list(request):
+    utenti = Utente.objects.all()
+    return render(request, "utente_all.html", {
+        "title": "Lista Utenti",
+        "utenti": utenti
+    })
+
+class UtenteDetailView(DetailView):
+    model = Utente
+    template_name = "utente_detail.html"
+
+class UtenteUpdateView(UpdateView):
+    model = Utente
+    template_name = "utente_form.html"
+    fields = utente_fields_list
+    success_url =reverse_lazy('utente_list')
+
+class UtenteDeleteView(DeleteView):
+    model = Utente
+    template_name = "utente_delete.html"
+    success_url =reverse_lazy('utente_list')
+
+
+# PROFILO UTENTI 
+
+@login_required(login_url='auth_access')
+def utente_profilo(request, pk:int):
+    utente :Utente = get_object_or_404(Utente, pk=pk)
+    return render(request, "utente_profilo.html", {
+        "title": f"Profilo {utente.cognome} {utente.nome}",
+        "utente": utente
+    })
+
+def auth_logout(request):
+    logout(request)
+    return redirect('risorsa_all')
+
+def auth_register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('risorsa_all')
+    else:
+        form = UserCreationForm()
+    return render(request, 'auth_register.html', {'form': form})
+
+def auth_access(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('risorsa_all')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'auth_access.html', {'form': form})
+
+
+# 2) decoratore cache memorizza ogni 10 minuti che varia in base ai cokie
+# 3) view che accestta solo richieste post altrimenti errore 405
+# 4) applica una cbv con [GET,POST] -> login_required su metodo dispatch. 
+#    @require_http_methods(["GET","POST"])
+# 5) @solo_staff controlla request.user.is_staff =True. 
+#    se non lo è restituisce HttpResponseForbidden("Accessso riservato solo allo staff"). 
+#    usa functools.wraps per preservare i metadati

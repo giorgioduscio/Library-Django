@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            {# CARD PROFILO #}
+            <div class="card bg-dark border-secondary shadow-lg">
+                
+                {# HEADER CARD #}
+                <div class="card-header border-secondary bg-transparent p-4">
+                    <div class="d-flex align-items-center">
+                        {# AVATAR PLACEHOLDER CON BOOTSTRAP #}
+                        <div class="rounded-circle bg-info d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" 
+                             style="width: 64px; height: 64px; font-size: 1.5rem;" aria-hidden="true">
+                            {{ utente.nome|first }}{{ utente.cognome|first }}
+                        </div>
+                        <div class="ms-3">
+                            <h1 class="h3 mb-0 text-white">{{ utente.nome }} {{ utente.cognome }}</h1>
+                            <p class="text-info mb-0 small">
+                                <i class="bi bi-envelope-fill me-1"></i>{{ utente.email }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {# CORPO CARD - DETTAGLI #}
+                <div class="card-body p-4">
+                    <h2 class="h6 text-uppercase text-secondary ls-1 mb-3">Informazioni Personali</h2>
+                    
+                    <ul class="list-group list-group-flush bg-transparent">
+                        <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between align-items-center">
+                            <span>Età</span>
+                            <span class="fw-bold">{{ utente.eta }} anni</span>
+                        </li>
+                        <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between align-items-center">
+                            <span>Stato Account</span>
+                            {% if utente.attivo %}
+                                <span class="badge rounded-pill bg-success-subtle text-success border border-success px-3">
+                                    Attivo
+                                </span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger px-3">
+                                    Non Attivo
+                                </span>
+                            {% endif %}
+                        </li>
+                    </ul>
+
+                    {# SEZIONE PRESTITI #}
+                    <div class="mt-4">
+                        <h2 class="h6 text-uppercase text-secondary ls-1 mb-3">Libri in Prestito</h2>
+                        {% with prestiti=utente.libri_prestito.all %}
+                            {% if prestiti %}
+                                <div class="list-group">
+                                    {% for libro in prestiti %}
+                                        <div class="list-group-item list-group-item-dark border-secondary d-flex justify-content-between align-items-center">
+                                            <span class="text-white small">{{ libro.titolo }}</span>
+                                            <span class="badge bg-secondary">In possesso</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-dark border-secondary py-2 small text-muted">
+                                    Nessun libro attualmente in prestito.
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+
+                {# FOOTER CARD - AZIONI #}
+                <div class="card-footer border-secondary bg-transparent p-4">
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <a href="{% url 'utente_update' utente.pk %}" class="btn btn-info flex-grow-1">
+                            <i class="bi bi-pencil-square me-2"></i>Modifica Profilo
+                        </a>
+                        <a href="{% url 'utente_list' %}" class="btn btn-outline-secondary">
+                            Torna alla lista
+                        </a>
+                    </div>
+                </div>
+
+            </div> {# FINE CARD #}
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
