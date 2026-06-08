@@ -1,29 +1,29 @@
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, JsonResponse
 from django.urls import reverse_lazy
-from .models import Risorsa, Utente
+from .models import Risorsa
 from .forms import RisorsaForm
-from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 
 def redirect_alla_home(request):
     return redirect('home')
 
+@cache_page(60 * 15) 
+@vary_on_cookie
 def home(request):
-    actions=[
-        {
-            'title': 'Vai alla lista delle risorse',
-            'url': 'risorsa_all',
-            'icon': 'list'
-        }
-    ]
-    return render(request, 'home.html', {'actions': actions})
-
+    return render(request, 'home.html', {
+        'title': "Home | Library Demo",
+        'totale_risorse': len(Risorsa.objects.all()),
+        'utenti_attivi': len(User.objects.filter(is_active=True)),
+        'prestiti_attivi': len(Risorsa.objects.filter(disponibile=False)),
+    })
+ 
 def risorsa_all(request):
     """
     Visualizza l'elenco delle risorse con ordinamento e paginazione dinamica.
@@ -34,150 +34,134 @@ def risorsa_all(request):
     if filter_value:
         risorse_list = risorse_list.filter(titolo__icontains=filter_value)
 
-    
     # ORDINAMENTO
-    sort_field = request.GET.get('sort', 'titolo')
-    sort_dir = request.GET.get('dir', 'asc')
+    sort_field = request.GET.get('sort', 'id')
+    sort_dir = request.GET.get('dir', '')
     # validation
-    campi_ammessi = ['id', 'titolo', 'descrizione', 'prezzo', 'disponibile']
-    if sort_field not in campi_ammessi:
-        sort_field = 'titolo'
-    ordine = f"-{sort_field}" if sort_dir == 'desc' else sort_field
-    # apply
-    risorse_list = risorse_list.order_by(ordine)
+    sort_allowed_fields = ['id', 'titolo', 'descrizione', 'prezzo', 'disponibile']
+    if sort_field not in sort_allowed_fields:
+        sort_field = 'id'
 
-    
+    headings = [
+        {'key': 'id', 'label': 'ID'},
+        {'key': 'titolo', 'label': 'Titolo'},
+        {'key': 'descrizione', 'label': 'Descrizione'},
+        {'key': 'prezzo', 'label': 'Prezzo', 'class': 'badge bg-primary fs-6'},
+        {'key': 'disponibile', 'label': 'Disponibile', 'type': 'boolean'},
+    ]
+
+    for h in headings:
+        if h['key'] == sort_field:
+            if sort_dir == 'asc': h['next_dir'] = 'desc'
+            elif sort_dir == 'desc': h['next_dir'] = ''
+            else: h['next_dir'] = 'asc'
+        else:
+            h['next_dir'] = 'asc'
+        
+
+    ordine = "" 
+    if sort_dir == 'desc':
+        ordine = f"-{sort_field}"
+    elif sort_dir == 'asc':
+        ordine = sort_field
+    # apply
+    if ordine: risorse_list = risorse_list.order_by(ordine)
+
     # PAGINAZIONE
-    pagination_limit = request.GET.get('limit', '10')
+    pagination_current_limit = request.GET.get('limit', '10')
     page_number = request.GET.get('page', 1)
     # Validation
-    allowed_limits = ['5', '10', '20', '30', '50', '100']
-    if pagination_limit not in allowed_limits:
-        pagination_limit = '10'
-    pagination_limit_int = int(pagination_limit)
+    pagination_allowed_limits = ['5', '10', '20', '30', '50', '100']
+    if pagination_current_limit not in pagination_allowed_limits:
+        pagination_current_limit = '10'
+    pagination_limit_int = int(pagination_current_limit)
     # apply
     paginator = Paginator(risorse_list, pagination_limit_int)
     risorse = paginator.get_page(page_number)
 
-    print(f"\n[DEBUG] risorsa_all ({paginator.count} results)")
-    print(f"- Sort: {sort_field}={sort_dir}\n- Limit: {pagination_limit}\n- Page: {page_number}\n- Filter: {filter_value}")
-
     return render(request, 'risorsa_all.html', {
-        'page_title': 'Risorse',
+        'title': 'Risorse',
         'risorse': risorse,
-        'current_sort': sort_field,
-        'current_dir': sort_dir,
-        'current_limit': pagination_limit,
-        'allowed_limits': allowed_limits,
-        'current_filter': filter_value,
-        'page_range': paginator.get_elided_page_range(risorse.number, on_each_side=2, on_ends=1)
+        'headings': headings,
+        'sort_field': sort_field,
+        'sort_dir': sort_dir,
+        'pagination_current_limit': pagination_current_limit,
+        'pagination_allowed_limits': pagination_allowed_limits,
+        'pagination_page_range': paginator.get_elided_page_range(risorse.number, on_each_side=2, on_ends=1),
+        'filter_value': filter_value,
     })
 
 def risorsa_create(request):
-    """
-    Gestisce la creazione di una nuova risorsa.
-    Se la richiesta è POST, convalida il form e salva i dati.
-    Altrimenti, mostra un form vuoto per l'inserimento manuale.
-    """
     if request.method == 'POST':
-        # L'utente ha cliccato sul pulsante di invio, processiamo i dati ricevuti
         form = RisorsaForm(request.POST)
         if form.is_valid():
-            # I dati sono corretti e sicuri, procediamo con il salvataggio nel database
             form.save()
             return redirect('risorsa_all')
     else:
-        # L'utente è appena arrivato sulla pagina, forniamo un modulo vuoto da compilare
         form = RisorsaForm()
-
-    return render(request, 'risorsa_form.html', {
-        'form': form, 
-        'titolo_pagina': 'Aggiungi Risorsa'
-    })
+    return render(request, 'risorsa_form.html', {'form': form, 'titolo_pagina': 'Aggiungi Risorsa'})
 
 def risorsa_update(request, pk):
-    """
-    Modifica una risorsa esistente identificata dalla sua chiave primaria (pk).
-    Carica i dati correnti nel form e, in caso di invio (POST), aggiorna il database.
-    Se la risorsa non esiste, restituisce un errore 404.
-    """
     risorsa = get_object_or_404(Risorsa, pk=pk)
-
     if request.method == 'POST':
-        # L'utente ha inviato le modifiche, le applichiamo all'istanza esistente
         form = RisorsaForm(request.POST, instance=risorsa)
         if form.is_valid():
-            # Verifichiamo la validità e aggiorniamo il record nel database
             form.save()
             return redirect('risorsa_all')
     else:
-        # Carichiamo i dati attuali della risorsa nel form per permetterne la modifica
         form = RisorsaForm(instance=risorsa)
-
-    return render(request, 'risorsa_form.html', {
-        'form': form, 
-        'risorsa': risorsa, 
-        'titolo_pagina': 'Modifica Risorsa'
-    })
+    return render(request, 'risorsa_form.html', {'form': form, 'risorsa': risorsa, 'titolo_pagina': 'Modifica Risorsa'})
 
 def risorsa_delete(request, pk):
-    """
-    Gestisce l'eliminazione sicura di una risorsa.
-    Mostra una pagina di conferma. La cancellazione effettiva avviene
-    solo se la richiesta viene confermata tramite il metodo POST.
-    """
     risorsa = get_object_or_404(Risorsa, pk=pk)
-
     if request.method == 'POST':
-        # L'eliminazione è stata confermata esplicitamente dall'utente
         risorsa.delete()
         return redirect('risorsa_all')
-
-    # Se la richiesta è GET, mostriamo la pagina di avviso prima di procedere
     return render(request, 'risorsa_delete.html', {'risorsa': risorsa})
 
 
 # UTENTI
 
-utente_fields_list =["nome", "cognome", "email", "eta", "attivo"]
+user_fields_list = ["username", "first_name", "last_name", "email", "is_active"]
 
 class UtenteCreateView(CreateView):
-    model = Utente
-    fields = utente_fields_list
+    model = User
+    fields = user_fields_list
     template_name = "utente_form.html"
-    success_url =reverse_lazy('utente_list')
+    success_url = reverse_lazy('utente_list')
 
 @login_required(login_url='auth_access')
 def utente_list(request):
-    utenti = Utente.objects.all()
+    utenti = User.objects.all()
     return render(request, "utente_all.html", {
         "title": "Lista Utenti",
         "utenti": utenti
     })
 
 class UtenteDetailView(DetailView):
-    model = Utente
+    model = User
     template_name = "utente_detail.html"
+    context_object_name = "utente"
 
 class UtenteUpdateView(UpdateView):
-    model = Utente
+    model = User
     template_name = "utente_form.html"
-    fields = utente_fields_list
-    success_url =reverse_lazy('utente_list')
+    fields = user_fields_list
+    success_url = reverse_lazy('utente_list')
 
 class UtenteDeleteView(DeleteView):
-    model = Utente
+    model = User
     template_name = "utente_delete.html"
-    success_url =reverse_lazy('utente_list')
+    success_url = reverse_lazy('utente_list')
 
 
 # PROFILO UTENTI 
 
 @login_required(login_url='auth_access')
 def utente_profilo(request, pk:int):
-    utente :Utente = get_object_or_404(Utente, pk=pk)
+    utente = get_object_or_404(User, pk=pk)
     return render(request, "utente_profilo.html", {
-        "title": f"Profilo {utente.cognome} {utente.nome}",
+        "title": f"Profilo {utente.last_name} {utente.first_name}",
         "utente": utente
     })
 
@@ -206,12 +190,3 @@ def auth_access(request):
     else:
         form = AuthenticationForm()
     return render(request, 'auth_access.html', {'form': form})
-
-
-# 2) decoratore cache memorizza ogni 10 minuti che varia in base ai cokie
-# 3) view che accestta solo richieste post altrimenti errore 405
-# 4) applica una cbv con [GET,POST] -> login_required su metodo dispatch. 
-#    @require_http_methods(["GET","POST"])
-# 5) @solo_staff controlla request.user.is_staff =True. 
-#    se non lo è restituisce HttpResponseForbidden("Accessso riservato solo allo staff"). 
-#    usa functools.wraps per preservare i metadati

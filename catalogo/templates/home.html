@@ -1,95 +1,95 @@
 {% extends 'base.html' %}
-{% block title %}Home | Library Demo{% endblock title %}
+{% block title %}{{ title }}{% endblock title %}
 
 {% block content %}
 <div class="container py-5">
-    
-    {# HERO SECTION #}
-    <div class="p-5 mb-4 bg-dark border border-secondary rounded-3 shadow-lg">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-4 fw-bold text-info">Benvenuti in Library Demo</h1>
-            <p class="col-md-8 mx-auto fs-4 text-secondary">
-                Una piattaforma semplice ed efficace per gestire il catalogo delle risorse e il prestito agli utenti. 
-                Esplora i nostri libri o gestisci l'anagrafica degli iscritti.
-            </p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
-                <a href="{% url 'risorsa_all' %}" class="btn btn-info btn-lg px-4 gap-3">
-                    <i class="bi bi-book me-2"></i>Esplora Catalogo
-                </a>
-                <a href="{% url 'utente_list' %}" class="btn btn-outline-light btn-lg px-4">
-                    <i class="bi bi-people me-2"></i>Gestisci Utenti
-                </a>
-            </div>
-        </div>
+  
+  {# HERO SECTION #}
+  <div class="p-5 mb-4">
+    <div class="container-fluid py-5 text-center">
+      <h1 class="display-4 fw-bold text-info">Benvenuti in Library Demo</h1>
+      <p class="col-md-8 mx-auto fs-4 text-secondary">
+        Una piattaforma semplice ed efficace per gestire il catalogo delle risorse e il prestito agli utenti. 
+        Esplora i nostri libri o gestisci l'anagrafica degli iscritti.
+      </p>
+      <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+        <a href="{% url 'risorsa_all' %}" class="btn btn-info btn-lg px-4 gap-3">
+          <i class="bi bi-book me-2"></i>Esplora Catalogo
+        </a>
+        <a href="{% url 'utente_list' %}" class="btn btn-outline-light btn-lg px-4">
+          <i class="bi bi-people me-2"></i>Gestisci Utenti
+        </a>
+      </div>
     </div>
+  </div>
 
-    {# FEATURE CARDS #}
-    <div class="row g-4 py-5">
-        <div class="col-md-4">
-            <div class="card h-100 bg-dark border-secondary">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
-                        <i class="bi bi-collection-fill"></i>
-                    </div>
-                    <h2 class="h4 text-white">Catalogo Risorse</h2>
-                    <p class="text-secondary">Visualizza, aggiungi o modifica i libri e le risorse digitali disponibili nella biblioteca.</p>
-                    <a href="{% url 'risorsa_all' %}" class="text-info text-decoration-none">Vai al catalogo &rarr;</a>
-                </div>
-            </div>
+  {# FEATURE CARDS #}
+  <div class="row g-4 py-5">
+    <div class="col-md-4">
+      <div class="card h-100 bg-dark border-secondary">
+        <div class="card-body text-center p-4">
+          <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
+            <i class="bi bi-collection-fill"></i>
+          </div>
+          <h2 class="h4 text-white">Catalogo Risorse</h2>
+          <p class="text-secondary">Visualizza, aggiungi o modifica i libri e le risorse digitali disponibili nella biblioteca.</p>
+          <a href="{% url 'risorsa_all' %}" class="text-info text-decoration-none">Vai al catalogo &rarr;</a>
         </div>
-        <div class="col-md-4">
-            <div class="card h-100 bg-dark border-secondary">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
-                        <i class="bi bi-person-badge-fill"></i>
-                    </div>
-                    <h2 class="h4 text-white">Area Utenti</h2>
-                    <p class="text-secondary">Gestisci il database degli utenti, controlla i loro profili e monitora lo stato delle iscrizioni.</p>
-                    <a href="{% url 'utente_list' %}" class="text-info text-decoration-none">Vedi utenti &rarr;</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card h-100 bg-dark border-secondary">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
-                        <i class="bi bi-shield-lock-fill"></i>
-                    </div>
-                    <h2 class="h4 text-white">Accesso Riservato</h2>
-                    <p class="text-secondary">Area protetta per gli amministratori. Accedi per gestire i prestiti e le impostazioni avanzate.</p>
-                    {% if not user.is_authenticated %}
-                        <a href="{% url 'auth_access' %}" class="text-info text-decoration-none">Accedi ora &rarr;</a>
-                    {% else %}
-                        <span class="text-success">Sei già autenticato</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="col-md-4">
+      <div class="card h-100 bg-dark border-secondary">
+        <div class="card-body text-center p-4">
+          <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
+            <i class="bi bi-person-badge-fill"></i>
+          </div>
+          <h2 class="h4 text-white">Area Utenti</h2>
+          <p class="text-secondary">Gestisci il database degli utenti, controlla i loro profili e monitora lo stato delle iscrizioni.</p>
+          <a href="{% url 'utente_list' %}" class="text-info text-decoration-none">Vedi utenti &rarr;</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100 bg-dark border-secondary">
+        <div class="card-body text-center p-4">
+          <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
+            <i class="bi bi-shield-lock-fill"></i>
+          </div>
+          <h2 class="h4 text-white">Accesso Riservato</h2>
+          <p class="text-secondary">Area protetta per gli amministratori. Accedi per gestire i prestiti e le impostazioni avanzate.</p>
+          {% if not user.is_authenticated %}
+            <a href="{% url 'auth_access' %}" class="text-info text-decoration-none">Accedi ora &rarr;</a>
+          {% else %}
+            <span class="text-success">Sei già autenticato</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 
-    {# STATISTICS/INFO SECTION #}
-    <div class="row align-items-center g-lg-5 py-5">
-        <div class="col-lg-7 text-start">
-            <h2 class="display-6 fw-bold lh-1 mb-3 text-white">Statistiche veloci</h2>
-            <p class="col-lg-10 fs-5 text-secondary">Monitora l'andamento della tua biblioteca in tempo reale. Gestione ottimizzata per ogni tipo di risorsa.</p>
-        </div>
-        <div class="col-lg-5">
-            <div class="p-4 p-md-5 border border-secondary rounded-3 bg-dark-subtle">
-                <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
-                    <span class="text-white">Libri Totali</span>
-                    <span class="badge bg-info text-dark">42</span>
-                </div>
-                <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
-                    <span class="text-white">Utenti Attivi</span>
-                    <span class="badge bg-info text-dark">15</span>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <span class="text-white">Prestiti in corso</span>
-                    <span class="badge bg-warning text-dark">8</span>
-                </div>
-            </div>
-        </div>
+  {# STATISTICS/INFO SECTION #}
+  <div class="row align-items-center g-lg-5 py-5">
+    <div class="col-lg-7 text-start">
+      <h2 class="display-6 fw-bold lh-1 mb-3 text-white">Statistiche veloci</h2>
+      <p class="col-lg-10 fs-5 text-secondary">Monitora l'andamento della tua biblioteca in tempo reale. Gestione ottimizzata per ogni tipo di risorsa.</p>
     </div>
+    <div class="col-lg-5">
+      <div class="p-4 p-md-5 border border-secondary rounded-3 bg-dark">
+        <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
+          <span class="text-white">Totale risorse</span>
+          <span class="badge bg-info text-dark">{{ totale_risorse }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
+          <span class="text-white">Utenti attivi</span>
+          <span class="badge bg-info text-dark">{{ utenti_attivi }}</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span class="text-white">Prestiti in corso</span>
+          <span class="badge bg-warning text-dark">{{ prestiti_attivi }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 {% endblock content %}

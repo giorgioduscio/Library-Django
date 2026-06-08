@@ -2,13 +2,14 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Elenco Utenti</h1>
+    <h1 class="text-white">Elenco Utenti</h1>
     <a href="{% url 'utente_create' %}" class="btn btn-primary mb-3">Nuovo Utente</a>
     
-    <table class="table table-striped">
+    <table class="table table-dark table-striped border-secondary">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Username</th>
                 <th>Nome</th>
                 <th>Cognome</th>
                 <th>Email</th>
@@ -19,18 +20,21 @@
             {% for utente in utenti %}
             <tr>
                 <td>{{ utente.id }}</td>
-                <td>{{ utente.nome }}</td>
-                <td>{{ utente.cognome }}</td>
+                <td>{{ utente.username }}</td>
+                <td>{{ utente.first_name }}</td>
+                <td>{{ utente.last_name }}</td>
                 <td>{{ utente.email }}</td>
                 <td>
-                    <a href="{% url 'utente_detail' utente.pk %}" class="btn btn-sm btn-info">Dettagli</a>
-                    <a href="{% url 'utente_update' utente.pk %}" class="btn btn-sm btn-warning">Modifica</a>
-                    <a href="{% url 'utente_delete' utente.pk %}" class="btn btn-sm btn-danger">Elimina</a>
+                    <div class="btn-group">
+                        <a href="{% url 'utente_detail' utente.pk %}" class="btn btn-sm btn-info">Profilo</a>
+                        <a href="{% url 'utente_update' utente.pk %}" class="btn btn-sm btn-warning">Modifica</a>
+                        <a href="{% url 'utente_delete' utente.pk %}" class="btn btn-sm btn-danger">Elimina</a>
+                    </div>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">Nessun utente trovato.</td>
+                <td colspan="5">Nessun utente trovato.</td>
             </tr>
             {% endfor %}
         </tbody>
