@@ -3,64 +3,64 @@
 
 {% block content %}
 <div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            
-            <div class="card bg-dark border-secondary shadow-lg">
-                <div class="card-header border-secondary bg-transparent p-4 text-center">
-                    <div class="rounded-circle bg-info d-inline-flex align-items-center justify-content-center text-white fw-bold shadow-sm mb-3" 
-                         style="width: 80px; height: 80px; font-size: 2rem;" aria-hidden="true">
-                        {{ utente.first_name|first }}{{ utente.last_name|first }}
-                    </div>
-                    <h1 class="h3 mb-0 text-white">{{ utente.first_name }} {{ utente.last_name }}</h1>
-                    <p class="text-info mb-0">@{{ utente.username }}</p>
-                </div>
-
-                <div class="card-body p-4">
-                    <ul class="list-group list-group-flush bg-transparent">
-                        <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between">
-                            <span class="text-secondary">Email</span>
-                            <span>{{ utente.email }}</span>
-                        </li>
-                        <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between">
-                            <span class="text-secondary">Stato Account</span>
-                            {% if utente.is_active %}
-                                <span class="badge bg-success">Attivo</span>
-                            {% else %}
-                                <span class="badge bg-danger">Disattivato</span>
-                            {% endif %}
-                        </li>
-                        <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between">
-                            <span class="text-secondary">Staff</span>
-                            <span>{{ utente.is_staff|yesno:"Sì,No" }}</span>
-                        </li>
-                    </ul>
-
-                    <div class="mt-4">
-                        <h2 class="h6 text-uppercase text-secondary mb-3">Libri in Prestito</h2>
-                        {% with prestiti=utente.libri_prestito.all %}
-                            {% if prestiti %}
-                                <div class="list-group">
-                                    {% for libro in prestiti %}
-                                        <div class="list-group-item list-group-item-dark border-secondary small">
-                                            {{ libro.titolo }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <p class="text-muted small">Nessun libro attualmente in prestito.</p>
-                            {% endif %}
-                        {% endwith %}
-                    </div>
-                </div>
-
-                <div class="card-footer border-secondary bg-transparent p-4 d-flex justify-content-between">
-                    <a href="{% url 'utente_update' utente.pk %}" class="btn btn-warning btn-sm">Modifica</a>
-                    <a href="{% url 'utente_list' %}" class="btn btn-outline-secondary btn-sm">Torna alla lista</a>
-                </div>
-            </div>
-
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      
+      <div class="card bg-dark border-secondary shadow-lg">
+        <div class="card-header border-secondary bg-transparent p-4 text-center">
+          <div class="rounded-circle bg-info d-inline-flex align-items-center justify-content-center text-white fw-bold shadow-sm mb-3" 
+             style="width: 80px; height: 80px; font-size: 2rem;" aria-hidden="true">
+            {{ utente.first_name|first }}{{ utente.last_name|first }}
+          </div>
+          <h1 class="h3 mb-0 text-white">{{ utente.first_name }} {{ utente.last_name }}</h1>
+          <p class="text-info mb-0">@{{ utente.username }}</p>
         </div>
+
+        <div class="card-body p-4">
+          <ul class="list-group list-group-flush bg-transparent">
+            <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between">
+              <span class="text-secondary">Email</span>
+              <span>{{ utente.email }}</span>
+            </li>
+            <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between">
+              <span class="text-secondary">Stato Account</span>
+              {% if utente.is_active %}
+                <span class="badge bg-success">Attivo</span>
+              {% else %}
+                <span class="badge bg-danger">Disattivato</span>
+              {% endif %}
+            </li>
+            <li class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between">
+              <span class="text-secondary">Staff</span>
+              <span>{{ utente.is_staff|yesno:"Sì,No" }}</span>
+            </li>
+          </ul>
+
+          <div class="mt-4">
+            <h2 class="h6 text-uppercase text-secondary mb-3">Libri in Prestito</h2>
+            {% with prestiti=utente.libri_prestito.all %}
+              {% if prestiti %}
+                <div class="list-group">
+                  {% for libro in prestiti %}
+                    <div class="list-group-item list-group-item-dark border-secondary small">
+                      {{ libro.titolo }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-muted small">Nessun libro attualmente in prestito.</p>
+              {% endif %}
+            {% endwith %}
+          </div>
+        </div>
+
+        <div class="card-footer border-secondary bg-transparent p-4 d-flex justify-content-between">
+          <a href="{% url 'user_update' utente.pk %}" class="btn btn-warning btn-sm">Modifica</a>
+          <a href="{% url 'user_list' %}" class="btn btn-outline-secondary btn-sm">Torna alla lista</a>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
 {% endblock content %}
