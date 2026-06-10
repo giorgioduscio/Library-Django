@@ -1,0 +1,51 @@
+{% extends 'shareds/base.html' %}
+
+{% block title %}Chat - {{ room.name }}{% endblock title %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 600px;">
+  {% comment %} HEADER {% endcomment %}
+  <div class="p-2 text-bg-success">
+    <h2>{{ room.name }}</h2>
+  </div>
+
+
+  {% comment %} BODY {% endcomment %}
+  <div class="">
+    {% for msg in messages %}
+      <div class="p-2 m-3 border-start border-3 d-flex flex-wrap justify-content-between">
+        <strong>{{ msg.user.username }}</strong>
+        <i>{{ msg.created_at }}</i>
+        <div class="w-100">{{ msg.text }}</div>
+      </div>
+
+    {% empty %}
+      <div class="m-2 alert alert-info">
+        <i class="bi bi-info-circle"></i>
+        <span>Nessun messaggio</span>
+      </div>
+    {% endfor %}
+  </div>
+  
+
+  {% comment %} FOOTER {% endcomment %}
+  <div class="py-5">
+    <div class="p-2 fixed-bottom text-bg-dark">
+      <div class="mx-auto" style="max-width: 400px;">
+        <form class="input-group" method="POST">
+          {% csrf_token %}
+          <input id="chat-message-input" class="form-control" 
+                 placeholder="Scrivi un messaggio" 
+                 required autocomplete="off" name="text" type="text">
+          
+          <button id="chat-message-submit" class="btn btn-success" type="submit">
+            <i class="bi bi-send"></i>
+            <span class="d-none d-md-inline">Invia</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

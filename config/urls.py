@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from catalogo import views
+from chat import views as chat_views
 
 urlpatterns = [
     # FUNZIONAMENTO BASE
@@ -8,11 +9,18 @@ urlpatterns = [
     path('', views.redirect_alla_home, name='redirect_alla_home'),
     path('home/', views.home, name='home'),
 
+    # CHAT
+    path('chat/', chat_views.room_list, name='room_list'),
+    path('chat/nuova/', chat_views.room_create, name='room_create'),
+    path('chat/<int:id>/', chat_views.chat, name='chat'),
+    path('chat/<int:id>/modifica/', chat_views.room_update, name='room_update'),
+    path('chat/<int:id>/elimina/', chat_views.room_delete, name='room_delete'),
+
     # GESTIONE UTENTI
     path('utenti/', views.utente_list, name='user_list'),
-    path('utenti/nuovo/', views.UtenteCreateView.as_view(), name='user_create'),
+    path('utenti/nuovo/', views.utente_create, name='user_create'),
     path('utenti/<int:pk>/', views.UtenteDetailView.as_view(), name='user_detail'),
-    path('utenti/modifica/<int:pk>/', views.UtenteUpdateView.as_view(), name='user_update'),
+    path('utenti/modifica/<int:pk>/', views.utente_update, name='user_update'),
     path('utenti/elimina/<int:pk>/', views.UtenteDeleteView.as_view(), name='user_delete'),
     
     # CATALOGO

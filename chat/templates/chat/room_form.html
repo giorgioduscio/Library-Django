@@ -1,0 +1,40 @@
+{% extends 'shareds/base.html' %}
+
+{% block title %} {{ title }} {% endblock title %}
+
+{% block content %}
+<section class="container mt-4" style="max-width: 600px">
+    <div class="card bg-dark text-white border-secondary">
+        <div class="card-header border-secondary text-bg-success">
+            <h1 class="h3 mb-0">{{ title }}</h1>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label class="form-label">Nome Stanza</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Utenti</label>
+                    {{ form.users }}
+                    {% if form.users.errors %}
+                        <div class="text-danger small">{{ form.users.errors }}</div>
+                    {% endif %}
+                    <div class="form-text text-light">Seleziona gli utenti che avranno accesso a questa stanza.</div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'room_list' %}" class="btn btn-outline-light">Annulla</a>
+                    <button type="submit" class="btn btn-success px-4">{{ submit_action_label|default:"Salva" }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}

@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 from .utils import get_crud_context
+from django import forms
 
 def redirect_alla_home(request):
     return redirect('home')
@@ -23,7 +24,8 @@ def home(request):
         'utenti_attivi': len(User.objects.filter(is_active=True)),
         'prestiti_attivi': len(Risorsa.objects.filter(disponibile=False)),
     })
- 
+
+@login_required
 def risorsa_all(request):
     """
     Visualizza l'elenco delle risorse con ordinamento e paginazione dinamica.
@@ -51,10 +53,11 @@ def risorsa_all(request):
             'delete': 'risorsa_delete',
         }
     )
-    context['label_create'] = "Aggiungi Nuova Risorsa"
+    context['label_create'] = "Nuova risorsa"
     
-    return render(request, 'crud_list.html', context)
+    return render(request, 'shareds/crud_list.html', context)
 
+@login_required
 def risorsa_create(request):
     if request.method == 'POST':
         form = RisorsaForm(request.POST)
@@ -64,13 +67,14 @@ def risorsa_create(request):
     else:
         form = RisorsaForm()
     
-    context = {
+    return render(request, 'shareds/generic_form.html', {
         'form': form, 
         'title': 'Aggiungi Risorsa',
+        'submit_action_label': 'Crea Risorsa',
         'cancel_url': reverse_lazy('risorsa_all')
-    }
-    return render(request, 'generic_form.html', context)
+    })
 
+@login_required
 def risorsa_update(request, pk):
     risorsa = get_object_or_404(Risorsa, pk=pk)
     if request.method == 'POST':
@@ -81,13 +85,14 @@ def risorsa_update(request, pk):
     else:
         form = RisorsaForm(instance=risorsa)
     
-    context = {
+    return render(request, 'shareds/generic_form.html', {
         'form': form, 
         'title': f'Modifica Risorsa: {risorsa.titolo}',
+        'submit_action_label': 'Aggiorna Risorsa',
         'cancel_url': reverse_lazy('risorsa_all')
-    }
-    return render(request, 'generic_form.html', context)
+    })
 
+@login_required
 def risorsa_delete(request, pk):
     risorsa = get_object_or_404(Risorsa, pk=pk)
     if request.method == 'POST':
@@ -100,24 +105,50 @@ def risorsa_delete(request, pk):
         'object_info': (risorsa.descrizione[:100] + '...') if len(risorsa.descrizione) > 100 else risorsa.descrizione,
         'cancel_url': reverse_lazy('risorsa_all')
     }
-    return render(request, 'confirm_delete.html', context)
+    return render(request, 'shareds/confirm_delete.html', context)
 
 
 # UTENTI
 
 user_fields_list = ["username", "first_name", "last_name", "email", "is_active"]
 
-class UtenteCreateView(CreateView):
-    model = User
-    fields = user_fields_list
-    template_name = "generic_form.html"
-    success_url = reverse_lazy('user_list')
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = user_fields_list
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = "Nuovo Utente"
-        context['cancel_url'] = reverse_lazy('user_list')
-        return context
+def utente_create(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')
+    else:
+        form = UserForm()
+    
+    return render(request, 'shareds/generic_form.html', {
+        'form': form,
+        'title': 'Nuovo Utente',
+        'submit_action_label': 'Crea Utente',
+        'cancel_url': reverse_lazy('user_list')
+    })
+
+def utente_update(request, pk):
+    utente = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=utente)
+        if form.is_valid():
+            form.save()
+            return redirect('user_list')
+    else:
+        form = UserForm(instance=utente)
+    
+    return render(request, 'shareds/generic_form.html', {
+        'form': form,
+        'title': f'Modifica Utente: {utente.username}',
+        'submit_action_label': 'Aggiorna Utente',
+        'cancel_url': reverse_lazy('user_list')
+    })
 
 @login_required(login_url='auth_access')
 def utente_list(request):
@@ -147,29 +178,16 @@ def utente_list(request):
         }
     )
     context['label_create'] = "Nuovo Utente"
-    return render(request, "crud_list.html", context)
+    return render(request, "shareds/crud_list.html", context)
 
 class UtenteDetailView(DetailView):
     model = User
     template_name = "utente_detail.html"
     context_object_name = "utente"
 
-class UtenteUpdateView(UpdateView):
-    model = User
-    template_name = "generic_form.html"
-    fields = user_fields_list
-    success_url = reverse_lazy('user_list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        utente = self.get_object()
-        context['title'] = f"Modifica Utente: {utente.username}"
-        context['cancel_url'] = reverse_lazy('user_list')
-        return context
-
 class UtenteDeleteView(DeleteView):
     model = User
-    template_name = "confirm_delete.html"
+    template_name = "shareds/confirm_delete.html"
     success_url = reverse_lazy('user_list')
 
     def get_context_data(self, **kwargs):
@@ -206,12 +224,12 @@ def auth_register(request):
     else:
         form = UserCreationForm()
     
-    context = {
+    return render(request, 'shareds/generic_form.html', {
         'form': form,
         'title': 'Registrazione',
+        'submit_action_label': 'Registrati',
         'cancel_url': reverse_lazy('home')
-    }
-    return render(request, 'generic_form.html', context)
+    })
 
 def auth_access(request):
     if request.method == 'POST':
@@ -223,9 +241,9 @@ def auth_access(request):
     else:
         form = AuthenticationForm()
     
-    context = {
+    return render(request, 'shareds/generic_form.html', {
         'form': form,
         'title': 'Accesso',
+        'submit_action_label': 'Accedi',
         'cancel_url': reverse_lazy('home')
-    }
-    return render(request, 'generic_form.html', context)
+    })

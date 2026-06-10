@@ -1,0 +1,47 @@
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Library Demo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'risorsa_all' %}">Catalogo</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{% url 'user_list' %}">Utenti</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'room_list' %}">Chat</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                {% if user.is_authenticated %}
+                <!-- autenticato -->
+                <li class="nav-item">
+                    <a class="nav-link text-info" href="{% url 'user_detail' user.id %}">{{ user.username }}</a>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'auth_logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link text-white" style="text-decoration: none;">Esci</button>
+                    </form>
+                </li>
+                
+                {% else %}
+                <!-- non autenticato -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auth_access' %}">Accedi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'auth_register' %}">Registrati</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock navbar %}
