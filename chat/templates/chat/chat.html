@@ -3,7 +3,11 @@
 {% block title %}Chat - {{ room.name }}{% endblock title %}
 
 {% block content %}
-<div class="mx-auto" style="max-width: 600px;">
+<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+
+<div class="mx-auto" style="max-width: 600px;" hx-ext="ws" 
+     ws-connect="{% if request.is_secure %}wss{% else %}ws{% endif %}://{{ request.get_host }}/ws/chat/{{ room.name|urlencode }}/">
   {% comment %} HEADER {% endcomment %}
   <div class="p-2 text-bg-success">
     <h2>{{ room.name }}</h2>
@@ -11,16 +15,12 @@
 
 
   {% comment %} BODY {% endcomment %}
-  <div class="">
+  <div id="chat-messages" class="p-2 d-flex flex-column-reverse gap-3">
     {% for msg in messages %}
-      <div class="p-2 m-3 border-start border-3 d-flex flex-wrap justify-content-between">
-        <strong>{{ msg.user.username }}</strong>
-        <i>{{ msg.created_at }}</i>
-        <div class="w-100">{{ msg.text }}</div>
-      </div>
+      {% include 'chat/message.html' %}
 
     {% empty %}
-      <div class="m-2 alert alert-info">
+      <div id="no-messages" class="m-2 alert alert-info">
         <i class="bi bi-info-circle"></i>
         <span>Nessun messaggio</span>
       </div>
@@ -32,8 +32,8 @@
   <div class="py-5">
     <div class="p-2 fixed-bottom text-bg-dark">
       <div class="mx-auto" style="max-width: 400px;">
-        <form class="input-group" method="POST">
-          {% csrf_token %}
+        <form id="chat-form" class="input-group" 
+              ws-send hx-on="htmx:wsAfterSend: this.reset()">
           <input id="chat-message-input" class="form-control" 
                  placeholder="Scrivi un messaggio" 
                  required autocomplete="off" name="text" type="text">

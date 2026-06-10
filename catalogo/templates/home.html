@@ -5,6 +5,7 @@
 <div class="container py-5">
   
   {# HERO SECTION #}
+
   <div class="p-3 mb-4">
     <div class="container-fluid py-5 text-center">
       <h1 class="display-4 fw-bold text-info">Benvenuti in Library Demo</h1>
@@ -24,71 +25,76 @@
   </div>
 
   {# FEATURE CARDS #}
+
+  <h2>Feature</h2>
   <div class="row g-4 py-5">
+    {% for feature in features %}
+
     <div class="col-md-4">
       <div class="card h-100 bg-dark border-secondary">
         <div class="card-body text-center p-4">
           <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
-            <i class="bi bi-collection-fill"></i>
+            <i class="bi bi-{{ feature.icon }}"></i>
           </div>
-          <h2 class="h4 text-white">Catalogo Risorse</h2>
-          <p class="text-secondary">Visualizza, aggiungi o modifica i libri e le risorse digitali disponibili nella biblioteca.</p>
-          <a href="{% url 'risorsa_all' %}" class="text-info text-decoration-none">Vai al catalogo &rarr;</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100 bg-dark border-secondary">
-        <div class="card-body text-center p-4">
-          <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
-            <i class="bi bi-person-badge-fill"></i>
-          </div>
-          <h2 class="h4 text-white">Area Utenti</h2>
-          <p class="text-secondary">Gestisci il database degli utenti, controlla i loro profili e monitora lo stato delle iscrizioni.</p>
-          <a href="{% url 'user_list' %}" class="text-info text-decoration-none">Vedi utenti &rarr;</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card h-100 bg-dark border-secondary">
-        <div class="card-body text-center p-4">
-          <div class="feature-icon-small d-inline-flex align-items-center justify-content-center text-info fs-1 mb-3">
-            <i class="bi bi-shield-lock-fill"></i>
-          </div>
-          <h2 class="h4 text-white">Accesso Riservato</h2>
-          <p class="text-secondary">Area protetta per gli amministratori. Accedi per gestire i prestiti e le impostazioni avanzate.</p>
-          {% if not user.is_authenticated %}
-            <a href="{% url 'auth_access' %}" class="text-info text-decoration-none">Accedi ora &rarr;</a>
-          {% else %}
-            <span class="text-success">Sei già autenticato</span>
+          <h2 class="h4 text-white">{{ feature.title }}</h2>
+          <p class="text-secondary">{{ feature.description }}</p>
+          {% if feature.is_logged != None %}
+            {% if not feature.is_logged %}
+              <a href="{% url 'auth_access' %}" class="text-info text-decoration-none">Accedi ora &rarr;</a>
+            {% else %}
+              <span class="text-success">Sei già autenticato</span>
+            {% endif %}
           {% endif %}
         </div>
       </div>
     </div>
+
+    {% endfor %}
   </div>
 
   {# STATISTICS/INFO SECTION #}
+
   <div class="row align-items-center g-lg-5 py-5">
     <div class="col-lg-7 text-start">
       <h2 class="display-6 fw-bold lh-1 mb-3 text-white">Statistiche veloci</h2>
       <p class="col-lg-10 fs-5 text-secondary">Monitora l'andamento della tua biblioteca in tempo reale. Gestione ottimizzata per ogni tipo di risorsa.</p>
     </div>
+
     <div class="col-lg-5">
       <div class="p-4 p-md-5 border border-secondary rounded-3 bg-dark">
-        <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
-          <span class="text-white">Totale risorse</span>
-          <span class="badge bg-info text-dark">{{ totale_risorse }}</span>
+        {% for stat in statistics %}
+        <div class="p-2 d-flex justify-content-between border-bottom border-secondary">
+          <span class="text-white">{{ stat.title }}</span>
+          <span class="badge bg-{{ stat.color }} text-dark">{{ stat.value }}</span>
         </div>
-        <div class="d-flex justify-content-between mb-3 border-bottom border-secondary pb-2">
-          <span class="text-white">Utenti attivi</span>
-          <span class="badge bg-info text-dark">{{ utenti_attivi }}</span>
-        </div>
-        <div class="d-flex justify-content-between">
-          <span class="text-white">Prestiti in corso</span>
-          <span class="badge bg-warning text-dark">{{ prestiti_attivi }}</span>
-        </div>
+        {% endfor %}
       </div>
     </div>
+  </div>
+
+  {# STRUMENTI #}
+
+  <h2>Strumenti utilizzati</h2>
+  <div class="p-2 border rounded table-responsive">
+    <table class="table table-dark table-striped">
+      <caption class="visually-hidden">Strumenti</caption>
+      <thead>
+        {% for label in tools_head %}
+        <th>{{ label }}</th>
+        {% endfor %}
+      </thead>
+      <tbody>
+        {% for tool in tools %}
+        <tr>
+          <td class="text-truncate">
+            <i class="bi bi-{{ tool.0 }}"></i>
+            <span>{{ tool.1 }}</span>
+          </td>
+          <td>{{ tool.2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 
 </div>

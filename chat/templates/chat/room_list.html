@@ -37,26 +37,27 @@
         <div class="d-grid text-bg-dark border-bottom align-items-center" 
             style="grid-template-columns: 1fr auto;">
             <a class="p-3 btn btn-dark text-start" 
-               href="{% url 'chat' room.id %}">
+               href="{% url 'chat' room.name %}">
                {{ room.name }}
-            </a>
-            <div class="dropdown me-2">
-                <button class="btn btn-outline-light border-0 rounded-circle" 
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                    <li>
-                        <a class="dropdown-item" href="{% url 'room_update' room.id %}">
-                            <i class="bi bi-pencil me-2"></i>Modifica
-                        </a>
-                    </li>
-                    <li><hr class="dropdown-divider border-secondary"></li>
-                    <li>
-                        <a class="dropdown-item text-danger" href="{% url 'room_delete' room.id %}">
-                            <i class="bi bi-trash me-2"></i>Elimina
-                        </a>
-                    </li>
+               </a>
+               <div class="dropdown me-2">
+               <button class="btn btn-outline-light border-0 rounded-circle"
+                       type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                   <i class="bi bi-three-dots"></i>
+               </button>
+               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                   <li>
+                       <a class="dropdown-item" href="{% url 'room_update' room.name %}">
+                           <i class="bi bi-pencil me-2"></i>Modifica
+                       </a>
+                   </li>
+                   <li><hr class="dropdown-divider border-secondary"></li>
+                   <li>
+                       <a class="dropdown-item text-danger" href="{% url 'room_delete' room.name %}">
+                           <i class="bi bi-trash me-2"></i>Elimina
+                       </a>
+                   </li>
+
                 </ul>
             </div>
         </div>

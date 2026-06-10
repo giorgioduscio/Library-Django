@@ -4,24 +4,24 @@ from .forms import RoomForm
 from django.contrib.auth.decorators import login_required
 
 @login_required
-def chat(request, id:int):
+def chat(request, room_name:str):
     """Gestisce il crud dei messaggi in una room"""
-    room = get_object_or_404(Room, id=id)
+    room = get_object_or_404(Room, name=room_name)
 
     if request.method == 'POST':
         text = request.POST.get('text')
         if text:
             Message.objects.create(room=room, user=request.user, text=text)
-        return redirect('chat', id=id)
+        return redirect('chat', room_name=room_name)
 
     elif request.method == 'DELETE':
         msg_id = request.GET.get('msg_id')
         if msg_id:
             get_object_or_404(Message, id=msg_id, room=room).delete()
-        return redirect('chat', id=id)
+        return redirect('chat', room_name=room_name)
 
     # GET
-    messages = Message.objects.filter(room=room)
+    messages = Message.objects.filter(room=room).order_by('created_at')
 
     return render(request, 'chat/chat.html', {
         'room': room,
@@ -62,9 +62,9 @@ def room_create(request):
     })
 
 @login_required
-def room_update(request, id:int):
+def room_update(request, room_name:str):
     """Modifica una room esistente"""
-    room = get_object_or_404(Room, id=id, users=request.user)
+    room = get_object_or_404(Room, name=room_name, users=request.user)
     if request.method == 'POST':
         form = RoomForm(request.POST, instance=room)
         if form.is_valid():
@@ -76,9 +76,9 @@ def room_update(request, id:int):
     return render(request, 'chat/room_form.html', {'form': form, 'title': 'Modifica Stanza'})
 
 @login_required
-def room_delete(request, id:int):
+def room_delete(request, room_name:str):
     """Elimina una room"""
-    room = get_object_or_404(Room, id=id, users=request.user)
+    room = get_object_or_404(Room, name=room_name, users=request.user)
     if request.method == 'POST':
         room.delete()
         return redirect('room_list')

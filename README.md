@@ -4,61 +4,61 @@ Questo è un progetto Django configurato con una struttura pulita e moderna, pro
 
 ## Struttura del Progetto
 
-- `config/`: Contiene le impostazioni del progetto, gli URL principali e le configurazioni WSGI/ASGI.
-- `manage.py`: L'utility da riga di comando per gestire il progetto.
-- `Dockerfile` & `docker-compose.yml`: Configurazioni per l'ambiente containerizzato.
-- `requirements.txt`: Elenco delle dipendenze Python.
+* `config/`: Contiene le impostazioni del progetto, gli URL principali e le configurazioni WSGI/ASGI.
+* `manage.py`: L'utility da riga di comando per gestire il progetto.
+* `Dockerfile` & `docker-compose.yml`: Configurazioni per l'ambiente containerizzato.
+* `requirements.txt`: Elenco delle dipendenze Python.
 
 ## Comandi Principali
 
 Di seguito sono elencati i comandi fondamentali per la gestione del server e del progetto.
 
+### Gestione con Docker (consigliato)
+
+Se preferisci usare Docker, usa questi comandi:
+
+* **Costruire e avviare i container**:
+  ```bash
+  docker-compose up --build
+  ```
+* **Fermare i container**:
+  ```bash
+  docker-compose down
+  ```
+* **Eseguire comandi Django dentro il container**:
+  ```bash
+  docker-compose exec django-demo python manage.py migrate
+  ```
+
+* **Shotcut script per avviare i server, eseguire migrazioni e accedere al terminale**:
+  ```bash
+  ./prompt.sh
+  ```
+
 ### Gestione del Server (Locale)
 
 Per eseguire questi comandi, assicurati di aver attivato il tuo ambiente virtuale (`venv`).
 
-- **Avviare il server di sviluppo**:
+* **Avviare il server di sviluppo**:
   ```bash
   python manage.py runserver
   ```
-- **Creare nuove migrazioni** (dopo aver modificato i modelli):
+* **Creare nuove migrazioni** (dopo aver modificato i modelli):
   ```bash
   python manage.py makemigrations
   ```
-- **Applicare le migrazioni** (per aggiornare il database):
+* **Applicare le migrazioni** (per aggiornare il database):
   ```bash
   python manage.py migrate
   ```
-- **Creare un utente amministratore** (per l'area `/admin`):
+* **Creare un utente amministratore** (per l'area `/admin`):
   ```bash
   python manage.py createsuperuser
   ```
-- **Creare una nuova app**:
+* **Creare una nuova app**:
   ```bash
   python manage.py startapp nome_app
   ```
-
-### Gestione con Docker
-
-Se preferisci usare Docker, usa questi comandi:
-
-- **Costruire e avviare i container**:
-  ```bash
-  docker-compose up --build
-  ```
-- **Fermare i container**:
-  ```bash
-  docker-compose down
-  ```
-- **Eseguire comandi Django dentro il container**:
-  ```bash
-  docker-compose exec web python manage.py migrate
-  ```
-
-## Note sulla Sicurezza
-
-- La `SECRET_KEY` attuale è visibile in `config/settings.py`. Per la messa in produzione, assicurati di spostarla in un file `.env`.
-- Il database `db.sqlite3` è escluso dal controllo versione tramite `.gitignore`.
 
 # Workflow creare pagina (Esempio: Spesa)
 
@@ -113,7 +113,7 @@ Se preferisci usare Docker, usa questi comandi:
     ```
 
 9. **Creare utente**
-    - Aprire il terminale del container
+    * Aprire il terminale del container
     ```python
     python manage.py createsuperuser --username gestore 
     ```
