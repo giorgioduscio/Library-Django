@@ -7,7 +7,7 @@ class Risorsa(models.Model):
     prezzo      = models.FloatField()
     disponibile = models.BooleanField(default=True)
     creato_il   = models.DateTimeField(auto_now_add=True)
-    utenti_prestito = models.ManyToManyField(User, related_name='libri_prestito', blank=True)
+    utente = models.ForeignKey(User, related_name='risorse', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         disponibile = "Disponibile" if(self.disponibile) else "Non disponibile"

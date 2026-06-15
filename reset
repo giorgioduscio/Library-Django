@@ -27,3 +27,5 @@ docker compose exec django-demo python manage.py migrate
 
 echo ""
 echo "✨ Reset completato con successo! Il database è pulito e aggiornato."
+
+./generate_admin

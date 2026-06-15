@@ -9,18 +9,21 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   </head>
-  <body style="min-height: 100vh; background: linear-gradient(0deg, #333, #000);">
-    <div id="app" class="text-white">
+  <body style="background: linear-gradient(0deg, #333, #000);">
+    <div id="app" class="text-white" style="min-height: 100vh;">
 
       <!-- NAVBAR -->
       {% include 'shareds/navbar.html' %}
-
+      
       <!-- CONTENT -->
       <main class="p-0 container">
-          {% block content %}
-          {% endblock %}
+        {% block content %}
+        {% endblock %}
       </main>
     </div>
+
+    <!-- FOOTER -->
+    {% include 'shareds/footer.html' %}
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

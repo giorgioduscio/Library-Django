@@ -5,7 +5,7 @@ from .models import Risorsa
 class RisorsaForm(forms.ModelForm):
     class Meta:
         model = Risorsa
-        fields = ['titolo', 'descrizione', 'prezzo', 'disponibile', 'utenti_prestito']
+        fields = ['titolo', 'descrizione', 'prezzo', 'disponibile', 'utente']
 
 class UtenteForm(forms.ModelForm):
     class Meta:

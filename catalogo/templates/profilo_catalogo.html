@@ -1,0 +1,45 @@
+{% extends 'shareds/base.html' %}
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block content %}
+<div class="py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white">{{ title }}</h1>
+        <a href="{% url 'user_profile' user.id %}" class="btn btn-outline-info">
+            <i class="bi bi-person-circle me-1"></i>Il Mio Profilo
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for risorsa in risorse %}
+            <div class="col">
+                <div class="card h-100 bg-dark border-secondary shadow-sm">
+                    <div class="card-body text-white">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title text-info mb-0">{{ risorsa.titolo }}</h5>
+                            <span class="badge bg-primary">{{ risorsa.prezzo }}€</span>
+                        </div>
+                        <p class="card-text text-secondary small">{{ risorsa.descrizione|truncatewords:20 }}</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-secondary p-3">
+                        <form action="{% url 'claim_risorsa' risorsa.pk %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-plus-circle me-2"></i>Aggiungi al Profilo
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="p-5 border border-secondary rounded bg-dark">
+                    <i class="bi bi-box-seam text-secondary mb-3" style="font-size: 3rem;"></i>
+                    <p class="text-secondary mb-0">Nessuna risorsa disponibile al momento.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}

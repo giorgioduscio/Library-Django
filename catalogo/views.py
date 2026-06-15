@@ -1,11 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from .models import Risorsa
-from .forms import RisorsaForm
-from django.contrib.auth.decorators import login_required
+from django.views import View
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django.utils.decorators import method_decorator
+
+from .models import Risorsa
+from .forms import RisorsaForm
 from config.utils import get_crud_context
 
 def redirect_alla_home(request):
@@ -41,17 +45,17 @@ def home(request):
     statistics=[
         {
             'title':'Risorse Totali', 
-            'value': len(Risorsa.objects.all()),
+            'value': Risorsa.objects.count(),
             'color': 'info'
         },
         {
             'title':'Utenti Attivi', 
-            'value': len(User.objects.filter(is_active=True)),
+            'value': User.objects.filter(is_active=True).count(),
             'color': 'info'
         },
         {
             'title':'Prestiti Attivi', 
-            'value': len(Risorsa.objects.filter(disponibile=False)),
+            'value': Risorsa.objects.filter(disponibile=False).count(),
             'color': 'warning'
         },
     ]
@@ -80,85 +84,123 @@ def home(request):
         'tools': tools,
     })
 
-@login_required
-def risorsa_all(request):
-    """
-    Visualizza l'elenco delle risorse con ordinamento e paginazione dinamica.
-    """
-    headings = [
-        {'key': 'id', 'label': 'ID'},
-        {'key': 'titolo', 'label': 'Titolo'},
-        {'key': 'descrizione', 'label': 'Descrizione'},
-        {'key': 'prezzo', 'label': 'Prezzo', 'class': 'badge bg-primary fs-6'},
-        {'key': 'disponibile', 'label': 'Disponibile', 'type': 'boolean'},
-    ]
-    
-    sort_allowed_fields = [h['key'] for h in headings]
-    
-    context = get_crud_context(
-        request, 
-        queryset=Risorsa.objects.all(),
-        headings=headings,
-        sort_allowed_fields=sort_allowed_fields,
-        title='Risorse',
-        filter_fields=['titolo'],
-        url_names={
-            'create': 'risorsa_create',
-            'update': 'risorsa_update',
-            'delete': 'risorsa_delete',
+# --- GESTIONE RISORSE (ADMIN AREA) ---
+
+class RisorsaListView(LoginRequiredMixin, View):
+    """Visualizza l'elenco delle risorse con ordinamento e paginazione."""
+    def get(self, request):
+        headings = [
+            {'key': 'id', 'label': 'ID'},
+            {'key': 'titolo', 'label': 'Titolo'},
+            {'key': 'descrizione', 'label': 'Descrizione'},
+            {'key': 'prezzo', 'label': 'Prezzo', 'class': 'badge bg-primary fs-6'},
+            {'key': 'disponibile', 'label': 'Disponibile', 'type': 'boolean'},
+        ]
+        context = get_crud_context(
+            request, 
+            queryset=Risorsa.objects.all(),
+            headings=headings,
+            sort_allowed_fields=[h['key'] for h in headings],
+            title='Gestione Risorse',
+            filter_fields=['titolo'],
+            url_names={
+                'create': 'risorsa_create',
+                'update': 'risorsa_update',
+                'delete': 'risorsa_delete',
+            }
+        )
+        context['label_create'] = "Nuova risorsa"
+        return render(request, 'shareds/crud_list.html', context)
+
+class RisorsaCreateView(LoginRequiredMixin, CreateView):
+    model = Risorsa
+    form_class = RisorsaForm
+    template_name = 'shareds/generic_form.html'
+    success_url = reverse_lazy('risorsa_all')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'title': 'Aggiungi Risorsa',
+            'submit_action_label': 'Crea Risorsa',
+            'cancel_url': self.success_url,
+            'edit': True
+        })
+        return context
+
+class RisorsaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Risorsa
+    form_class = RisorsaForm
+    template_name = 'shareds/generic_form.html'
+    success_url = reverse_lazy('risorsa_all')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'title': f'Modifica Risorsa: {self.object.titolo}',
+            'submit_action_label': 'Aggiorna Risorsa',
+            'cancel_url': self.success_url,
+            'edit': True
+        })
+        return context
+
+class RisorsaDeleteView(LoginRequiredMixin, DeleteView):
+    model = Risorsa
+    template_name = 'shareds/confirm_delete.html'
+    success_url = reverse_lazy('risorsa_all')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'title': f'Elimina {self.object.titolo}',
+            'message': f"Sei sicuro di voler eliminare la risorsa '{self.object.titolo}'?",
+            'object_info': self.object.descrizione[:150] + "..." if len(self.object.descrizione) > 150 else self.object.descrizione,
+            'cancel_url': self.success_url
+        })
+        return context
+
+# --- AZIONI UTENTE (SHOP / CATALOGO PUBBLICO) ---
+
+class CatalogoPubblicoListView(LoginRequiredMixin, ListView):
+    """Visualizza le risorse disponibili per il riscatto."""
+    model = Risorsa
+    template_name = 'profilo_catalogo.html'
+    context_object_name = 'risorse'
+
+    def get_queryset(self):
+        return Risorsa.objects.filter(disponibile=True, utente__isnull=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Shop Risorse Disponibili'
+        return context
+
+class RisorsaClaimView(LoginRequiredMixin, View):
+    """Assegna una risorsa all'utente corrente."""
+    def post(self, request, pk):
+        risorsa = get_object_or_404(Risorsa, pk=pk, disponibile=True, utente__isnull=True)
+        risorsa.utente = request.user
+        risorsa.disponibile = False
+        risorsa.save()
+        return redirect('user_profile', pk=request.user.pk)
+
+class RisorsaRestituisciView(LoginRequiredMixin, View):
+    """Gestisce la restituzione (conferma GET, azione POST)."""
+    def get(self, request, pk):
+        risorsa = get_object_or_404(Risorsa, pk=pk)
+        context = {
+            'title': f'Restituisci {risorsa.titolo}',
+            'header': 'Conferma Restituzione',
+            'message': f"Vuoi restituire la risorsa '{risorsa.titolo}' al catalogo?",
+            'object_info': risorsa.titolo,
+            'cancel_url': reverse_lazy('user_profile', kwargs={'pk': request.user.pk}),
+            'submit_action_label': 'Restituisci',
         }
-    )
-    context['label_create'] = "Nuova risorsa"
-    
-    return render(request, 'shareds/crud_list.html', context)
+        return render(request, 'shareds/confirm_delete.html', context)
 
-@login_required
-def risorsa_create(request):
-    if request.method == 'POST':
-        form = RisorsaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('risorsa_all')
-    else:
-        form = RisorsaForm()
-    
-    return render(request, 'shareds/generic_form.html', {
-        'form': form, 
-        'title': 'Aggiungi Risorsa',
-        'submit_action_label': 'Crea Risorsa',
-        'cancel_url': reverse_lazy('risorsa_all')
-    })
-
-@login_required
-def risorsa_update(request, pk):
-    risorsa = get_object_or_404(Risorsa, pk=pk)
-    if request.method == 'POST':
-        form = RisorsaForm(request.POST, instance=risorsa)
-        if form.is_valid():
-            form.save()
-            return redirect('risorsa_all')
-    else:
-        form = RisorsaForm(instance=risorsa)
-    
-    return render(request, 'shareds/generic_form.html', {
-        'form': form, 
-        'title': f'Modifica Risorsa: {risorsa.titolo}',
-        'submit_action_label': 'Aggiorna Risorsa',
-        'cancel_url': reverse_lazy('risorsa_all')
-    })
-
-@login_required
-def risorsa_delete(request, pk):
-    risorsa = get_object_or_404(Risorsa, pk=pk)
-    if request.method == 'POST':
-        risorsa.delete()
-        return redirect('risorsa_all')
-    
-    context = {
-        'title': f'Elimina {risorsa.titolo}',
-        'message': f"Stai per eliminare la risorsa '{risorsa.titolo}'.",
-        'object_info': (risorsa.descrizione[:100] + '...') if len(risorsa.descrizione) > 100 else risorsa.descrizione,
-        'cancel_url': reverse_lazy('risorsa_all')
-    }
-    return render(request, 'shareds/confirm_delete.html', context)
-
+    def post(self, request, pk):
+        risorsa = get_object_or_404(Risorsa, pk=pk)
+        risorsa.disponibile = True
+        risorsa.utente = None
+        risorsa.save()
+        return redirect('user_profile', pk=request.user.pk)

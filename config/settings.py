@@ -130,6 +130,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'config' / 'static',
+]
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'auth_access'
 LOGIN_URL = 'auth_access'

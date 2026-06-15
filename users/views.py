@@ -6,6 +6,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, DeleteView 
 from config.utils import get_crud_context
+from django.contrib.auth import logout, login
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 # UTENTI
 
@@ -29,7 +31,8 @@ def utente_create(request):
         'form': form,
         'title': 'Nuovo Utente',
         'submit_action_label': 'Crea Utente',
-        'cancel_url': reverse_lazy('user_list')
+        'cancel_url': reverse_lazy('user_list'),
+        'edit': True
     })
 
 def utente_update(request, pk):
@@ -46,7 +49,8 @@ def utente_update(request, pk):
         'form': form,
         'title': f'Modifica Utente: {utente.username}',
         'submit_action_label': 'Aggiorna Utente',
-        'cancel_url': reverse_lazy('user_list')
+        'cancel_url': reverse_lazy('user_list'),
+        'edit': True
     })
 
 @login_required(login_url='auth_access')
@@ -81,8 +85,18 @@ def utente_list(request):
 
 class UtenteDetailView(DetailView):
     model = User
-    template_name = "utente_detail.html"
+    template_name = "shareds/generic_form.html"
     context_object_name = "utente"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        utente = self.get_object()
+        context['form'] = UserForm(instance=utente)
+        context['title'] = f"Dettaglio Utente: {utente.username}"
+        context['edit'] = False
+        context['edit_url'] = reverse_lazy('user_update', kwargs={'pk': utente.pk})
+        context['cancel_url'] = reverse_lazy('user_list')
+        return context
 
 class UtenteDeleteView(DeleteView):
     model = User
@@ -102,11 +116,13 @@ class UtenteDeleteView(DeleteView):
 # PROFILO UTENTI 
 
 @login_required(login_url='auth_access')
-def utente_profilo(request, pk:int):
+def profilo_privato(request, pk:int):
     utente = get_object_or_404(User, pk=pk)
-    return render(request, "utente_profilo.html", {
+    risorse_match = utente.risorse.all()
+    return render(request, "profilo_privato.html", {
         "title": f"Profilo {utente.last_name} {utente.first_name}",
-        "utente": utente
+        "utente": utente,
+        "risorse": risorse_match
     })
 
 def auth_logout(request):
