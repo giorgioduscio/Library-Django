@@ -95,14 +95,22 @@
         <tr>
           {% for head in headings %}
           <th class="border-secondary">
-            <a class="p-1 btn btn-dark text-start w-100 d-flex justify-content-between align-items-center" 
+            <a class="p-1 btn btn-dark text-start w-100 d-flex gap-2 justify-content-between align-items-center" 
                href="?sort={{ head.key }}&dir={{ head.next_dir }}&limit={{ pagination_current_limit }}&filter={{ filter_value }}">
               <span>{{ head.label }}</span> 
-              {% if sort_field == head.key %}
-                {% if sort_dir == 'asc' %} <i class="bi bi-caret-down-fill"></i>
-                {% elif sort_dir == 'desc' %}<i class="bi bi-caret-up-fill"></i>
+              <span class="p-1 px-2 sort-icons text-secondary">
+                {% if sort_field == head.key and sort_dir == 'asc' %}
+                  <i class="bottom-0 bi bi-caret-up-fill text-white"></i>
+                {% else %}
+                  <i class="bottom-0 bi bi-caret-up-fill"></i>
                 {% endif %}
-              {% endif %}
+                
+                {% if sort_field == head.key and sort_dir == 'desc' %}
+                  <i class="top-0 bi bi-caret-down-fill text-white"></i>
+                {% else %}
+                  <i class="top-0 bi bi-caret-down-fill"></i>
+                {% endif %}
+              </span>
             </a>
           </th>
           {% endfor %}
@@ -155,4 +163,15 @@
     </table>
   </div>
 </div>
+
+<style>
+  .sort-icons {
+    display: grid;
+    position: relative;
+  }
+  
+  .sort-icons>i {
+    position: absolute;
+  }
+</style>
 {% endblock %}

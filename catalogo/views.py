@@ -6,7 +6,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.utils.decorators import method_decorator
 
 from .models import Risorsa
 from .forms import RisorsaForm
@@ -92,6 +91,7 @@ class RisorsaListView(LoginRequiredMixin, View):
         headings = [
             {'key': 'id', 'label': 'ID'},
             {'key': 'titolo', 'label': 'Titolo'},
+            {'key': 'autore_nome', 'label': 'Autore'},
             {'key': 'descrizione', 'label': 'Descrizione'},
             {'key': 'prezzo', 'label': 'Prezzo', 'class': 'badge bg-primary fs-6'},
             {'key': 'disponibile', 'label': 'Disponibile', 'type': 'boolean'},
@@ -102,7 +102,7 @@ class RisorsaListView(LoginRequiredMixin, View):
             headings=headings,
             sort_allowed_fields=[h['key'] for h in headings],
             title='Gestione Risorse',
-            filter_fields=['titolo'],
+            filter_fields=['titolo', 'autore_nome'],
             url_names={
                 'create': 'risorsa_create',
                 'update': 'risorsa_update',
@@ -168,11 +168,22 @@ class CatalogoPubblicoListView(LoginRequiredMixin, ListView):
     context_object_name = 'risorse'
 
     def get_queryset(self):
-        return Risorsa.objects.filter(disponibile=True, utente__isnull=True)
+        queryset = Risorsa.objects.filter(disponibile=True, utente__isnull=True)
+        q = self.request.GET.get('q')
+        autore = self.request.GET.get('autore')
+        
+        if q:
+            queryset = queryset.filter(titolo__icontains=q)
+        if autore:
+            queryset = queryset.filter(autore_nome__icontains=autore)
+            
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Shop Risorse Disponibili'
+        context['q'] = self.request.GET.get('q', '')
+        context['autore'] = self.request.GET.get('autore', '')
         return context
 
 class RisorsaClaimView(LoginRequiredMixin, View):

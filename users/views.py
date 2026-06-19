@@ -7,16 +7,11 @@ from django.urls import reverse_lazy
 from django.views.generic import DetailView, DeleteView 
 from config.utils import get_crud_context
 from django.contrib.auth import logout, login
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import RegisterForm, UserForm
 
 # UTENTI
 
-user_fields_list = ["username", "first_name", "last_name", "email", "is_active"]
-
-class UserForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = user_fields_list
 
 def utente_create(request):
     if request.method == 'POST':
@@ -131,19 +126,20 @@ def auth_logout(request):
 
 def auth_register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('risorsa_all')
     else:
-        form = UserCreationForm()
+        form = RegisterForm()
     
     return render(request, 'shareds/generic_form.html', {
         'form': form,
         'title': 'Registrazione',
         'submit_action_label': 'Registrati',
-        'cancel_url': reverse_lazy('home')
+        'cancel_url': reverse_lazy('home'),
+        'edit': True
     })
 
 def auth_access(request):
@@ -160,5 +156,6 @@ def auth_access(request):
         'form': form,
         'title': 'Accesso',
         'submit_action_label': 'Accedi',
-        'cancel_url': reverse_lazy('home')
+        'cancel_url': reverse_lazy('home'),
+        'edit': True
     })

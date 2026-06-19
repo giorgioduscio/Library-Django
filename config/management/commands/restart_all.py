@@ -1,13 +1,85 @@
+# Per avviare questo script, esegui il seguente comando dal terminale nella root del progetto:
+# python manage.py restart_all
+
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
+from django.conf import settings
 from catalogo.models import Risorsa
+from chat.models import Room, Message
+import random
 
 class Command(BaseCommand):
-    help = 'Resetta le risorse del catalogo con dati di esempio'
+    help = 'Resetta il database: elimina e ricrea utenti, risorse e chat di esempio'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write('Inizio pulizia e popolamento database...')
+        # Protezione per l'ambiente di produzione
+        if not settings.DEBUG:
+            self.stdout.write(self.style.ERROR('ERRORE: Questo script non è utilizzabile in produzione!'))
+            return
+
+        self.stdout.write('RESET DATABASE \n')
         
-        # Pulizia del database
+        self._reset_utenti()
+        self._reset_risorse()
+        self._reset_chat()
+
+        self.stdout.write('RESET COMPLETATO!\n\n')
+        
+        
+
+    def _reset_utenti(self):
+        # ... (metodo invariato)
+        self.stdout.write('\n* Reset utenti')
+        User.objects.all().delete()
+        User.objects.create_superuser(username='admin', email='admin@example.com', password='adminadmin')
+        utenti_dati = [
+            ('mario', 'Rossi'), ('luigi', 'Verdi'), ('giulia', 'Bianchi'),
+            ('anna', 'Neri'), ('paolo', 'Gialli'), ('sofia', 'Viola'),
+            ('marco', 'Blu'), ('elena', 'Arancio'), ('luca', 'Grigi'),
+        ]
+        for username, cognome in utenti_dati:
+            User.objects.create_user(
+                username=username,
+                email=f'{username}@example.com',
+                password=username+username,
+                first_name=username.capitalize(),
+                last_name=cognome
+            )
+        self.stdout.write(f'| Creati {len(utenti_dati) + 1} utenti.')
+
+    def _reset_chat(self):
+        self.stdout.write('\n* Reset chat')
+        Message.objects.all().delete()
+        Room.objects.all().delete()
+
+        utenti = list(User.objects.all())
+        room_names = ['Generale', 'Sviluppo', 'Tempo Libero']
+        
+        testi_esempio = [
+            "Ciao a tutti!", "Come va?", "Qualcuno ha visto l'ultimo film di Batman?",
+            "Ottimo lavoro sul progetto!", "Avete suggerimenti per un libro?",
+            "Oggi il tempo è fantastico.", "Sto imparando Django ed è fantastico!",
+            "Qualcuno vuole fare una partita a Zelda?", "Ho appena finito di leggere 1984.",
+            "Consigli per un corso di Python?", "La pizza ieri sera era buonissima.",
+            "Buon inizio settimana a tutti!", "Sto testando la chat reattiva."
+        ]
+
+        for name in room_names:
+            room = Room.objects.create(name=name)
+            # Aggiungiamo tutti gli utenti alla room
+            room.users.set(utenti)
+            
+            # Creiamo 10 messaggi casuali per room
+            for _ in range(10):
+                Message.objects.create(
+                    room=room,
+                    user=random.choice(utenti),
+                    text=random.choice(testi_esempio)
+                )
+            self.stdout.write(f'| Stanza "{name}" creata con 10 messaggi.')
+
+    def _reset_risorse(self):
+        self.stdout.write('\n* Reset risorse')
         Risorsa.objects.all().delete()
 
         # Film
@@ -142,4 +214,4 @@ class Command(BaseCommand):
             prezzo=139.0,
         )
         
-        self.stdout.write(self.style.SUCCESS('Database popolato con successo!'))
+        self.stdout.write('| Risorse create con successo.')       

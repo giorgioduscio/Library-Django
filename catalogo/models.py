@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 class Risorsa(models.Model):
     titolo      = models.CharField(max_length=100)
+    autore_nome = models.CharField(max_length=100, blank=True, null=True)
     descrizione = models.TextField()
     prezzo      = models.FloatField()
     disponibile = models.BooleanField(default=True)
@@ -14,3 +15,5 @@ class Risorsa(models.Model):
         return f"{self.id}) {self.titolo}: {self.prezzo}€ {disponibile}"
     class Meta:
         ordering = ['titolo']
+        verbose_name = "Risorsa"
+        verbose_name_plural = "Risorse"

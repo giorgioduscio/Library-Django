@@ -1,3 +1,0 @@
-echo "ADMIN"
-docker compose exec django-demo  python manage.py createsuperuser --username admin --email admin@email.com
-echo "ADMIN CREATO"
