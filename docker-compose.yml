@@ -8,9 +8,9 @@ services:
     ports:
       - "${PORT:-8000}:8000"
     environment:
-      - DEBUG=${DEBUG:-True}
-      - SECRET_KEY=${SECRET_KEY:-django-insecure-default-key-for-dev}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0}
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
       - PYTHONUNBUFFERED=1
     stdin_open: true
     tty: true

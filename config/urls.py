@@ -1,14 +1,26 @@
 from django.contrib import admin
 from django.urls import path
+from django.http import JsonResponse
+from django.utils import timezone
 from users import views as USERS
 from catalogo import views as CATALOGO
 from chat import views as CHAT
 
+def health_check(request):
+    return JsonResponse({
+        'status': 'healthy',
+        'timestamp': timezone.now().isoformat()
+    })
+def trigger_500(request):
+    raise Exception("Test 500 error")
+
 urlpatterns = [
     # FUNZIONAMENTO BASE
     path('admin/', admin.site.urls),
+    path('health/', health_check, name='health_check'),
     path('', CATALOGO.redirect_alla_home, name='redirect_alla_home'),
     path('home/', CATALOGO.home, name='home'),
+    path('test-500/', trigger_500, name='test_500'),
 
     # CHAT
     path('chat/', CHAT.room_list, name='room_list'),
@@ -41,3 +53,7 @@ urlpatterns = [
     path('logout/', USERS.auth_logout, name='auth_logout'),
     path('profilo/<int:pk>/', USERS.profilo_privato, name='user_profile'),
 ]
+
+handler404 = 'config.views.handler404'
+handler500 = 'config.views.handler500'
+
