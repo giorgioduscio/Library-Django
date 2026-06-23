@@ -148,3 +148,47 @@ LOGIN_URL = 'auth_access'
 # Error pages
 handler404 = 'config.views.handler404'
 handler500 = 'config.views.handler500'
+
+# Logging settings
+LOGS_DIR = BASE_DIR / 'logs'
+os.makedirs(LOGS_DIR, exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'security_file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': LOGS_DIR / 'security.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django.security': {
+            'handlers': ['security_file', 'console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}
+

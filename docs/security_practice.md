@@ -12,17 +12,17 @@
 - [ ] **HSTS** configurato
 - [x] **Security Headers** (XSS, nosniff, X-Frame) configurati
 - [ ] **Database** usa SSL e credenziali sicure
-- [ ] **Password** degli utenti sono complesse
+- [x] **Password** degli utenti sono complesse
 - [ ] **2FA** abilitato per admin
 - [ ] **Rate Limiting** configurato
-- [ ] **Logging** di sicurezza attivato
+- [x] **Logging** di sicurezza attivato
 - [ ] **Backup** automatici configurati
 - [x] **Dipendenze** aggiornate e prive di vulnerabilità ✅
 - [x] **Docker** esegue con utente non root
 - [ ] **Ports** esposte solo quelle necessarie
 - [x] **Health Check** configurato
 - [ ] **Monitoraggio** (Sentry, etc.) attivo
-- [ ] **Template di errore** personalizzati
+- [x] **Template di errore** personalizzati
 - [x] **CSRF** protection attivo
 - [x] **Sessioni** configurate in modo sicuro
 - [ ] **WebSocket** con autenticazione e rate limiting
