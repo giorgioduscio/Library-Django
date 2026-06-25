@@ -6,15 +6,19 @@
 <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
 
-<div class="mx-auto" style="max-width: 600px;" hx-ext="ws" 
+<section class="mx-auto" style="max-width: 600px;" hx-ext="ws" 
      ws-connect="{% if request.is_secure %}wss{% else %}ws{% endif %}://{{ request.get_host }}/ws/chat/{{ room.name|urlencode }}/">
-  {% comment %} HEADER {% endcomment %}
-  <div class="p-2 text-bg-success">
-    <h2>{{ room.name }}</h2>
+  <!-- HEADER -->
+  <div class="p-2 d-flex align-items-center gap-2">
+    <a href="{% url 'room_list' %}" 
+      class="p-1 btn btn-outline-light border-0">
+      <i class="bi bi-arrow-left fs-5"></i>
+    </a>
+    <h2 class="m-0">{{ room.name }}</h2>
   </div>
 
 
-  {% comment %} BODY {% endcomment %}
+  <!-- BODY -->
   <div id="chat-messages" class="p-2 d-flex flex-column-reverse gap-3">
     {% for msg in messages %}
       {% include 'chat/message.html' %}
@@ -28,7 +32,7 @@
   </div>
   
 
-  {% comment %} FOOTER {% endcomment %}
+  <!-- FOOTER -->
   <div class="py-5">
     <div class="p-2 fixed-bottom text-bg-dark">
       <div class="mx-auto" style="max-width: 400px;">
@@ -47,5 +51,5 @@
     </div>
   </div>
   
-</div>
+</section>
 {% endblock %}

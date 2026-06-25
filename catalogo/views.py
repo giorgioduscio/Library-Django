@@ -6,6 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django.db.models import Q
 
 from .models import Risorsa
 from .forms import RisorsaForm
@@ -170,12 +171,9 @@ class CatalogoPubblicoListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         queryset = Risorsa.objects.filter(disponibile=True, utente__isnull=True)
         q = self.request.GET.get('q')
-        autore = self.request.GET.get('autore')
         
         if q:
-            queryset = queryset.filter(titolo__icontains=q)
-        if autore:
-            queryset = queryset.filter(autore_nome__icontains=autore)
+            queryset = queryset.filter(Q(titolo__icontains=q) | Q(autore_nome__icontains=q))
             
         return queryset
 
@@ -183,7 +181,6 @@ class CatalogoPubblicoListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Shop Risorse Disponibili'
         context['q'] = self.request.GET.get('q', '')
-        context['autore'] = self.request.GET.get('autore', '')
         return context
 
 class RisorsaClaimView(LoginRequiredMixin, View):

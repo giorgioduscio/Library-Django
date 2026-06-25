@@ -17,7 +17,7 @@ leggi la sezione Checklist di Sicurezza in  @docs/security_practice.md . qual'e 
 
 * 2. Pensonalizzazione users (età, colore, icona bootstrap)
 * 2. Implementare test
-* 2. Layout chat
+* 2. *Layout chat*
 * 3. implementare Vue.ts???
-* 3. Messa in produzione
+* 3. Messa in produzione??
 * 3. Professionalità sito

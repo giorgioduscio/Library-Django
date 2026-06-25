@@ -2,7 +2,8 @@ services:
   django-demo:
     build: .
     container_name: django-demo
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 # Standard
+    # command: daphne -b 0.0.0.0 -p 8000 config.asgi:application # websockets
     volumes:
       - .:/app
     ports:
@@ -12,5 +13,6 @@ services:
       - SECRET_KEY=${SECRET_KEY}
       - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
       - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=config.settings
     stdin_open: true
     tty: true

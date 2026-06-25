@@ -8,7 +8,8 @@ from django.contrib.auth.models import User
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room_group_name = f'chat_{self.room_name}'
+        # Sanitize room name for group name (replace spaces and special chars with underscore)
+        self.room_group_name = f"chat_{self.room_name.replace(' ', '_').replace('-', '_')}"
 
         # Unisciti al gruppo della stanza
         await self.channel_layer.group_add(

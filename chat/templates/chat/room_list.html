@@ -4,71 +4,70 @@
 
 {% block content %}
 <section class="p-0 container" style="max-width: 600px">
-    {% comment %} HEAD {% endcomment %}
-    <div class="p-2 text-bg-success d-flex justify-content-between align-items-center">
-        <h1>Stanze</h1>
-        <a href="{% url 'room_create' %}" class="btn btn-outline-light">Nuova stanza</a>
+  {% comment %} HEAD {% endcomment %}
+  <div class="p-2 d-flex justify-content-between align-items-center">
+    <h1>Stanze</h1>
+    <a href="{% url 'room_create' %}" class="btn btn-success">Nuova stanza</a>
+  </div>
+
+  {% comment %} FILTER {% endcomment %}
+  <form class="p-2 mb-2" method="get">
+    <label for="filter">Cerca stanza:</label>
+    <div class="input-group">
+      <input type="text" id="filter" name="filter" 
+          class="form-control"
+          placeholder="Es: Principale, Giustificativi"
+          value="{{ filter_value }}">
+      <button class="btn btn-primary" type="submit">
+        <i class="bi bi-search"></i>
+        <span class="d-none d-md-inline">Cerca</span>
+      </button>
+      {% if filter_value %}
+        <a href="{% url 'room_list' %}" class="btn btn-danger">
+          <i class="bi bi-x-lg"></i>
+          <span class="d-none d-md-inline">Reset</span>
+        </a>
+      {% endif %}
+    </div>
+  </form>
+  
+  {% comment %} CONTENT {% endcomment %}
+  <div>
+    {% for room in room_list %}
+    <div class="d-grid text-bg-dark border-bottom align-items-center" style="grid-template-columns: 1fr auto;">
+      <a class="p-3 btn btn-dark text-start" 
+        href="{% url 'chat' room.name %}">
+        {{ room.name }}
+      </a>
+      <div class="dropdown">
+        <button class="p-3 btn btn-dark"
+            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-three-dots"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+          <li>
+            <a class="dropdown-item" href="{% url 'room_update' room.name %}">
+              <i class="bi bi-pencil me-2"></i>Modifica
+            </a>
+          </li>
+          <li><hr class="dropdown-divider border-secondary"></li>
+          <li>
+            <a class="dropdown-item text-danger" href="{% url 'room_delete' room.name %}">
+              <i class="bi bi-trash me-2"></i>Elimina
+            </a>
+          </li>
+
+        </ul>
+      </div>
     </div>
 
-    {% comment %} FILTER {% endcomment %}
-    <form class="p-2 mb-2" method="get">
-        <label for="filter">Cerca stanza:</label>
-        <div class="input-group">
-            <input type="text" id="filter" name="filter" 
-                    class="form-control"
-                    placeholder="Es: Principale, Giustificativi"
-                    value="{{ filter_value }}">
-            <button class="btn btn-primary" type="submit">
-                <i class="bi bi-search"></i>
-                <span class="d-none d-md-inline">Cerca</span>
-            </button>
-            {% if filter_value %}
-                <a href="{% url 'room_list' %}" class="btn btn-danger">
-                    <i class="bi bi-x-lg"></i>
-                    <span class="d-none d-md-inline">Reset</span>
-                </a>
-            {% endif %}
-        </div>
-    </form>
-    
-    {% comment %} CONTENT {% endcomment %}
-    <div>
-        {% for room in room_list %}
-        <div class="d-grid text-bg-dark border-bottom align-items-center" 
-            style="grid-template-columns: 1fr auto;">
-            <a class="p-3 btn btn-dark text-start" 
-               href="{% url 'chat' room.name %}">
-               {{ room.name }}
-               </a>
-               <div class="dropdown me-2">
-               <button class="btn btn-outline-light border-0 rounded-circle"
-                       type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                   <i class="bi bi-three-dots"></i>
-               </button>
-               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                   <li>
-                       <a class="dropdown-item" href="{% url 'room_update' room.name %}">
-                           <i class="bi bi-pencil me-2"></i>Modifica
-                       </a>
-                   </li>
-                   <li><hr class="dropdown-divider border-secondary"></li>
-                   <li>
-                       <a class="dropdown-item text-danger" href="{% url 'room_delete' room.name %}">
-                           <i class="bi bi-trash me-2"></i>Elimina
-                       </a>
-                   </li>
-
-                </ul>
-            </div>
-        </div>
-
-        {% empty %}
-        <div class="m-2 alert alert-info">
-            <i class="bi bi-info-circle"></i>
-            <span>Nessuna stanza trovata</span>
-        </div>
-        {% endfor %}
+    {% empty %}
+    <div class="m-2 alert alert-info">
+      <i class="bi bi-info-circle"></i>
+      <span>Nessuna stanza trovata</span>
     </div>
+    {% endfor %}
+  </div>
 
 </section>
 {% endblock content %}
