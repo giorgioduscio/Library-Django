@@ -15,8 +15,8 @@ from config.utils import get_crud_context
 def redirect_alla_home(request):
     return redirect('home')
 
-@cache_page(60 * 15) 
-@vary_on_cookie
+# @cache_page(60 * 15) 
+# @vary_on_cookie
 def home(request):
     features = [
         {
@@ -104,13 +104,14 @@ class RisorsaListView(LoginRequiredMixin, View):
             sort_allowed_fields=[h['key'] for h in headings],
             title='Gestione Risorse',
             filter_fields=['titolo', 'autore_nome'],
+            filter_placeholder='Cerca per titolo o autore',
             url_names={
                 'create': 'risorsa_create',
                 'update': 'risorsa_update',
                 'delete': 'risorsa_delete',
-            }
+            },
+            label_create="Nuova risorsa"
         )
-        context['label_create'] = "Nuova risorsa"
         return render(request, 'shareds/crud_list.html', context)
 
 class RisorsaCreateView(LoginRequiredMixin, CreateView):

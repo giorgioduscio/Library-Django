@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-def get_crud_context(request, queryset, headings, sort_allowed_fields, title, filter_fields=None, url_names=None):
+def get_crud_context(request, queryset, headings, sort_allowed_fields, title, filter_fields=None, filter_placeholder=None, url_names=None, label_create=None):
     """
     Genera il contesto comune per le viste CRUD con filtraggio, ordinamento e paginazione.
     """
@@ -59,5 +59,7 @@ def get_crud_context(request, queryset, headings, sort_allowed_fields, title, fi
         'pagination_allowed_limits': pagination_allowed_limits,
         'pagination_page_range': paginator.get_elided_page_range(page_obj.number, on_each_side=2, on_ends=1),
         'filter_value': filter_value,
+        'filter_placeholder': filter_placeholder,
+        'label_create': label_create,
         'url_names': url_names or {},
     }
