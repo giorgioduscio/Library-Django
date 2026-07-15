@@ -16,3 +16,19 @@ services:
       - DJANGO_SETTINGS_MODULE=config.settings
     stdin_open: true
     tty: true
+
+  library-frontend:
+    build:
+      context: .
+      dockerfile: dockerfile-frontend
+    container_name: library-frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true

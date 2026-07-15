@@ -32,3 +32,8 @@ staticfiles/
 # Documentation
 README.md
 prompt.sh
+
+# Frontend
+**/node_modules/
+frontend/dist/
+frontend/.vscode/

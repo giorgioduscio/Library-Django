@@ -28,6 +28,9 @@ urlpatterns = [
     path('chat/<str:room_name>/', CHAT.chat, name='chat'),
     path('chat/<str:room_name>/modifica/', CHAT.room_update, name='room_update'),
     path('chat/<str:room_name>/elimina/', CHAT.room_delete, name='room_delete'),
+    path('api/rooms/', CHAT.api_room_list, name='api_room_list'),
+    path('api/rooms/<int:room_id>/', CHAT.api_room_detail, name='api_room_detail'),
+
 
     # GESTIONE UTENTI
     path('utenti/', USERS.utente_list, name='user_list'),

@@ -1,4 +1,5 @@
 asgiref==3.11.1
+django-cors-headers==4.6.0
 attrs==26.1.0
 autobahn==25.12.2
 Automat==25.4.16

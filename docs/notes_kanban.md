@@ -28,8 +28,8 @@ manage.py changepassword admin
 * funzionamento base
 * lista utenti 
 * autenticazione
+* implementare Vue.ts
 
 ## freeze
 
-* 3. implementare Vue.ts???
-* 3. Messa in produzione??
+* Messa in produzione??
