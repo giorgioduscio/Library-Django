@@ -1,5 +1,5 @@
 # Per avviare questo script, esegui il seguente comando dal terminale nella root del progetto:
-# python manage.py restart_all
+# python manage.py restart_db
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -85,48 +85,56 @@ class Command(BaseCommand):
         # Film
         Risorsa.objects.create(
             titolo="Batman: Cavaliere oscuro",
+            autore_nome="Christopher Nolan",
             descrizione="Il Cavaliere oscuro è un film d'azione e thriller psicologico del 2008 diretto da Christopher Nolan.",
             prezzo=10.0,
         )
 
         Risorsa.objects.create(
             titolo="Il Signore degli Anelli: Il ritorno del re",
+            autore_nome="Peter Jackson",
             descrizione="Il Signore degli Anelli: Il ritorno del re è un film fantasy del 2003 diretto da Peter Jackson.",
             prezzo=15.0,
         )
 
         Risorsa.objects.create(
             titolo="Il Padrino",
+            autore_nome="Francis Ford Coppola",
             descrizione="Il Padrino è un film crime del 1972 diretto da Francis Ford Coppola.",
             prezzo=20.0,
         )
 
         Risorsa.objects.create(
             titolo="Il Padrino Parte II",
+            autore_nome="Francis Ford Coppola",
             descrizione="Il Padrino Parte II è un film crime del 1974 diretto da Francis Ford Coppola.",
             prezzo=25.0,
         )
 
         Risorsa.objects.create(
             titolo="Pulp Fiction",
+            autore_nome="Quentin Tarantino",
             descrizione="Pulp Fiction è un film crime del 1994 diretto da Quentin Tarantino, noto per la sua narrazione non lineare.",
             prezzo=12.5,
         )
 
         Risorsa.objects.create(
             titolo="Inception",
+            autore_nome="Christopher Nolan",
             descrizione="Inception è un film di fantascienza del 2010 diretto da Christopher Nolan, che esplora il concetto di furto di idee attraverso i sogni.",
             prezzo=14.0,
         )
 
         Risorsa.objects.create(
             titolo="Forrest Gump",
+            autore_nome="Robert Zemeckis",
             descrizione="Forrest Gump è un film drammatico del 1994 diretto da Robert Zemeckis, che racconta la vita di un uomo con un QI basso ma un grande cuore.",
             prezzo=11.0,
         )
 
         Risorsa.objects.create(
             titolo="Matrix",
+            autore_nome="Wachowski Sisters",
             descrizione="Matrix è un film di fantascienza del 1999 diretto dalle sorelle Wachowski, che esplora un mondo simulato controllato da macchine.",
             prezzo=13.0,
         )
@@ -134,24 +142,28 @@ class Command(BaseCommand):
         # Libri
         Risorsa.objects.create(
             titolo="Il Signore degli Anelli: La Compagnia dell'Anello",
+            autore_nome="J.R.R. Tolkien",
             descrizione="Primo volume della trilogia fantasy scritta da J.R.R. Tolkien, che narra l'inizio dell'avventura per distruggere l'Anello del Potere.",
             prezzo=18.0,
         )
 
         Risorsa.objects.create(
             titolo="1984",
+            autore_nome="George Orwell",
             descrizione="1984 è un romanzo distopico di George Orwell, che descrive un futuro in cui il governo controlla ogni aspetto della vita dei cittadini.",
             prezzo=9.5,
         )
 
         Risorsa.objects.create(
             titolo="Il Grande Gatsby",
+            autore_nome="F. Scott Fitzgerald",
             descrizione="Il Grande Gatsby è un romanzo scritto da F. Scott Fitzgerald, che esplora temi come il sogno americano e la decadenza morale.",
             prezzo=10.5,
         )
 
         Risorsa.objects.create(
             titolo="Harry Potter e la Pietra Filosofale",
+            autore_nome="J.K. Rowling",
             descrizione="Primo libro della saga fantasy di J.K. Rowling, che racconta le avventure del giovane mago Harry Potter.",
             prezzo=12.0,
         )
@@ -159,18 +171,21 @@ class Command(BaseCommand):
         # Corsi online
         Risorsa.objects.create(
             titolo="Corso di Python per principianti",
+            autore_nome="Piattaforma E-Learning",
             descrizione="Un corso completo per imparare le basi di Python, dalla sintassi alle strutture dati.",
             prezzo=49.99,
         )
 
         Risorsa.objects.create(
             titolo="Corso avanzato di Django",
+            autore_nome="Piattaforma E-Learning",
             descrizione="Un corso per sviluppatori che vogliono approfondire Django, dalla creazione di API alla gestione di progetti complessi.",
             prezzo=79.99,
         )
 
         Risorsa.objects.create(
             titolo="Master in Data Science",
+            autore_nome="Università Online",
             descrizione="Un percorso formativo per imparare a analizzare dati con Python, SQL e strumenti di machine learning.",
             prezzo=199.99,
         )
@@ -178,12 +193,14 @@ class Command(BaseCommand):
         # Musica
         Risorsa.objects.create(
             titolo="Album: The Dark Side of the Moon",
+            autore_nome="Pink Floyd",
             descrizione="Album dei Pink Floyd pubblicato nel 1973, considerato uno dei migliori album di tutti i tempi.",
             prezzo=15.0,
         )
 
         Risorsa.objects.create(
             titolo="Album: Thriller",
+            autore_nome="Michael Jackson",
             descrizione="Album di Michael Jackson pubblicato nel 1982, il più venduto della storia.",
             prezzo=14.0,
         )
@@ -191,12 +208,14 @@ class Command(BaseCommand):
         # Videogiochi
         Risorsa.objects.create(
             titolo="The Legend of Zelda: Breath of the Wild",
+            autore_nome="Nintendo",
             descrizione="Videogioco di avventura sviluppato da Nintendo per Nintendo Switch, noto per il suo mondo aperto e la libertà di esplorazione.",
             prezzo=59.99,
         )
 
         Risorsa.objects.create(
             titolo="Red Dead Redemption 2",
+            autore_nome="Rockstar Games",
             descrizione="Videogioco di azione e avventura sviluppato da Rockstar Games, ambientato nel Vecchio West.",
             prezzo=49.99,
         )
@@ -204,12 +223,14 @@ class Command(BaseCommand):
         # Strumenti software
         Risorsa.objects.create(
             titolo="Licenza Adobe Photoshop",
+            autore_nome="Adobe",
             descrizione="Licenza annuale per Adobe Photoshop, il software di editing grafico più utilizzato al mondo.",
             prezzo=239.88,
         )
 
         Risorsa.objects.create(
             titolo="Licenza JetBrains PyCharm Professional",
+            autore_nome="JetBrains",
             descrizione="Licenza annuale per PyCharm Professional, l'IDE di JetBrains per lo sviluppo in Python.",
             prezzo=139.0,
         )

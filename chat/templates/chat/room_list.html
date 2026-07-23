@@ -4,13 +4,13 @@
 
 {% block content %}
 <section class="p-0 container" style="max-width: 600px">
-  {% comment %} HEAD {% endcomment %}
+  {# HEAD #}
   <div class="p-2 d-flex justify-content-between align-items-center">
     <h1>Stanze</h1>
     <a href="{% url 'room_create' %}" class="btn btn-success">Nuova stanza</a>
   </div>
 
-  {% comment %} FILTER {% endcomment %}
+  {# FILTER #}
   <form class="p-2 mb-2" method="get">
     <label for="filter">Cerca stanza:</label>
     <div class="input-group">
@@ -31,16 +31,18 @@
     </div>
   </form>
   
-  {% comment %} CONTENT {% endcomment %}
+  {# CONTENT #}
   <div>
     {% for room in room_list %}
+    {# RIGA #}
     <div class="d-grid text-bg-dark border-bottom align-items-center" style="grid-template-columns: 1fr auto;">
-      <a class="p-3 btn btn-dark text-start" 
+      <a class="p-3 btn btn-dark rounded-0 text-start" 
         href="{% url 'chat' room.name %}">
         {{ room.name }}
       </a>
+      {# DROPDOWN #}
       <div class="dropdown">
-        <button class="p-3 btn btn-dark"
+        <button class="p-3 btn btn-dark rounded-0"
             type="button" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-three-dots"></i>
         </button>

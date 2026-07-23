@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 class Risorsa(models.Model):
     titolo      = models.CharField(max_length=100)
-    autore_nome = models.CharField(max_length=100, blank=True, null=True)
+    autore_nome = models.CharField(max_length=100)
     descrizione = models.TextField()
     prezzo      = models.FloatField()
     disponibile = models.BooleanField(default=True)

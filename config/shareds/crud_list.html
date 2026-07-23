@@ -4,21 +4,28 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-{% comment %} HEADER {% endcomment %}
-<section class="container">
-  <div class="mb-3 py-2 row justify-content-between align-items-center text-bg-dark">
-    <h2 class="col m-0 text-truncate">{{ title }}</h2>
-    
-    <div class="col-auto d-flex justify-content-end">
-      {% if url_names.create %}
-      <a href="{% url url_names.create %}" class="btn btn-success btn-sm text-truncate">
-        <i class="bi bi-plus-lg"></i> 
-        <span class="d-none d-md-inline">{{ label_create|default:"Aggiungi Nuovo" }}</span>
-      </a>
-      {% endif %}
+
+{# HEADER #}
+<div class="text-bg-dark">
+  <div class="container">
+
+    <div class="mb-3 py-2 row justify-content-between align-items-center">
+      <h2 class="col m-0 text-truncate">{{ title }}</h2>
+      
+      <div class="col-auto d-flex justify-content-end">
+        {% if url_names.create %}
+        <a href="{% url url_names.create %}" class="btn btn-success btn-sm text-truncate">
+          <i class="bi bi-plus-lg"></i> 
+          <span class="d-none d-md-inline">{{ label_create|default:"Aggiungi Nuovo" }}</span>
+        </a>
+        {% endif %}
+      </div>
     </div>
+
   </div>
-  
+</div>
+
+<section class="container">
   <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
     {# FILTRO #}
     <div class="">
@@ -103,13 +110,13 @@
                  href="?sort={{ head.key }}&dir={{ head.next_dir }}&limit={{ pagination_current_limit }}&filter={{ filter_value }}">
                 <span>{{ head.label }}</span> 
                 <span class="p-1 px-2 sort-icons text-secondary">
-                  {% if sort_field == head.key and sort_dir == 'asc' %}
+                  {% if sort_field == head.key and sort_dir == 'desc' %}
                     <i class="bottom-0 bi bi-caret-up-fill text-white"></i>
                   {% else %}
                     <i class="bottom-0 bi bi-caret-up-fill"></i>
                   {% endif %}
                   
-                  {% if sort_field == head.key and sort_dir == 'desc' %}
+                  {% if sort_field == head.key and sort_dir == 'asc' %}
                     <i class="top-0 bi bi-caret-down-fill text-white"></i>
                   {% else %}
                     <i class="top-0 bi bi-caret-down-fill"></i>

@@ -3,15 +3,13 @@
 {% block title %}Chat - {{ room.name }}{% endblock title %}
 
 {% block content %}
-<script src="https://unpkg.com/htmx.org@1.9.12"></script>
-<script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
 
 <section class="mx-auto" style="max-width: 600px;" hx-ext="ws" 
      ws-connect="{% if request.is_secure %}wss{% else %}ws{% endif %}://{{ request.get_host }}/ws/chat/{{ room.name|urlencode }}/">
   <!-- HEADER -->
   <div class="p-2 d-flex align-items-center gap-2">
     <a href="{% url 'room_list' %}" 
-      class="p-1 btn btn-outline-light border-0">
+      class="btn btn-sm btn-outline-light border-0 rounded-circle">
       <i class="bi bi-arrow-left fs-5"></i>
     </a>
     <h2 class="m-0">{{ room.name }}</h2>
@@ -33,19 +31,25 @@
   
 
   <!-- FOOTER -->
-  <div class="py-5">
-    <div class="p-2 fixed-bottom text-bg-dark">
+  <div class="position-relative">
+    <div class="p-2 position-fixed bottom-0 start-0 end-0">
       <div class="mx-auto" style="max-width: 400px;">
         <form id="chat-form" class="input-group" 
               ws-send hx-on="htmx:wsAfterSend: this.reset()">
-          <input id="chat-message-input" class="form-control" 
-                 placeholder="Scrivi un messaggio" 
-                 required autocomplete="off" name="text" type="text">
+
+          <input  id="chat-message-input" 
+                  class="form-control" 
+                  placeholder="Scrivi un messaggio" 
+                  required 
+                  autocomplete="off" 
+                  name="text" 
+                  type="text">
           
           <button id="chat-message-submit" class="btn btn-success" type="submit">
             <i class="bi bi-send"></i>
             <span class="d-none d-md-inline">Invia</span>
           </button>
+
         </form>
       </div>
     </div>
