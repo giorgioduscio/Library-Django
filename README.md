@@ -4,9 +4,20 @@ Questo è un progetto Django configurato con una struttura pulita e moderna, pro
 
 ## Scaricare il progetto
 
+Posizionarsi nella cartella dei progetti e clonare il repository:
+
 ```bash
 git clone https://github.com/giorgioduscio/Library-Django.git
 cd Library-Django
+```
+
+Crea un file `.env` nella root del progetto con le seguenti variabili:
+
+```
+DEBUG=True
+SECRET_KEY=django-framework-completo
+ALLOWED_HOSTS=localhost,127.0.0.1
+PORT=8000
 ```
 
 ---
@@ -43,6 +54,22 @@ Se preferisci usare Docker, usa questi comandi:
   ```powershell
   ./cmd.ps1
   ```
+
+* **Popolare il database con dati di esempio**:
+  ```bash
+  docker-compose exec django-demo python manage.py restart_db
+  ```
+  Credenziali admin: 
+  - Username: `admin`
+  - Password: `adminadmin`
+
+* **Creare credenziali di accesso per l'area amministrativa**:
+  ```bash
+  docker-compose exec django-demo python manage.py createsuperuser
+  ```
+  - Inserire username, email e password dal terminale
+  - Confermare la password
+  - Andare nella sezione /admin/ e inserire le credenziali
 
 ---
 
