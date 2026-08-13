@@ -2,12 +2,14 @@
 
 Questo è un progetto Django configurato con una struttura pulita e moderna, pronto per lo sviluppo locale e con supporto Docker.
 
-## Struttura del Progetto
+## Scaricare il progetto
 
-* `config/`: Contiene le impostazioni del progetto, gli URL principali e le configurazioni WSGI/ASGI.
-* `manage.py`: L'utility da riga di comando per gestire il progetto.
-* `Dockerfile` & `docker-compose.yml`: Configurazioni per l'ambiente containerizzato.
-* `requirements.txt`: Elenco delle dipendenze Python.
+```bash
+git clone https://github.com/giorgioduscio/Library-Django.git
+cd Library-Django
+```
+
+---
 
 ## Comandi Principali
 
@@ -31,9 +33,18 @@ Se preferisci usare Docker, usa questi comandi:
   ```
 
 * **Shotcut script per avviare i server, eseguire migrazioni e accedere al terminale**:
+  
+  Bash
   ```bash
-  ./prompt.sh
+  ./cmd.sh
   ```
+
+  Powershell
+  ```powershell
+  ./cmd.ps1
+  ```
+
+---
 
 ### Gestione del Server (Locale)
 
@@ -59,6 +70,13 @@ Per eseguire questi comandi, assicurati di aver attivato il tuo ambiente virtual
   ```bash
   python manage.py startapp nome_app
   ```
+
+## Struttura del Progetto
+
+* `config/`: Contiene le impostazioni del progetto, gli URL principali e le configurazioni WSGI/ASGI.
+* `manage.py`: L'utility da riga di comando per gestire il progetto.
+* `Dockerfile` & `docker-compose.yml`: Configurazioni per l'ambiente containerizzato.
+* `requirements.txt`: Elenco delle dipendenze Python.
 
 # Workflow creare pagina (Esempio: Spesa)
 
